@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ওয়ারহাউজ ও ইনভেন্টরি ম্যানেজমেন্ট সিস্টেম</title>
+    <!-- Bootstrap CSS for layout & styling -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- html2pdf Library for PDF Download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        body { background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding-bottom: 50px; }
+        .card { border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .table-custom th { background-color: #0d6efd; color: white; }
+        .pdf-template { padding: 30px; background: #fff; border: 1px solid #ccc; font-family: sans-serif; }
+    </style>
+</head>
+<body>
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4 text-primary font-weight-bold">ওয়ারহাউজ ইনভেন্টরি ও আউটলেট ডেলিভারি সিস্টেম</h2>
+
+    <!-- ১. আউটলেট সিলেকশন ড্রপডাউন -->
+    <div class="card p-3">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <label for="outletSelect" class="form-label fw-bold">আউটলেট সিলেক্ট করুন (ডেলিভারির জন্য):</label>
+                <select id="outletSelect" class="form-select border-primary" onchange="clearDeliverySheet()">
+                    <option value="">-- যেকোনো একটি আউটলেট নির্বাচন করুন --</option>
+                    <option value="ধানমন্ডি আউটলেট">ধানমন্ডি আউটলেট</option>
+                    <option value="মিরপুর আউটলেট">মিরপুর আউটলেট</option>
+                    <option value="উত্তরা আউটলেট">উত্তরা আউটলেট</option>
+                    <option value="চট্টগ্রাম আউটলেট">চট্টগ্রাম আউটলেট</option>
+                </select>
+            </div>
+            <div class="col-md-6 text-end mt-3 mt-md-0">
+                <button class="btn btn-outline-primary me-2" onclick="downloadSelectedStockPDF()">সিলেক্টেড স্টক শীট (PDF)</button>
+                <button class="btn btn-success" onclick="downloadDeliverySheetPDF()">আউটলেট ডেলিভারি শীট (PDF)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ২. স্টক ম্যানেজমেন্ট টেবিল -->
+    <div class="card p-3">
+        <h5 class="card-title mb-3">ইনভেন্টরি তালিকা</h5>
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle text-center table-custom">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)"></th>
+                        <th>প্রোডাক্টের নাম</th>
+                        <th>বর্তমান স্টক (ওয়ারহাউজ)</th>
+                        <th>নতুন স্টক যোগ করুন (সাপ্লায়ার)</th>
+                        <th>আউটলেটে ডেলিভারি (স্টক আউট)</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryBody">
+                    <!-- JavaScript Dynamic Rows -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- hidden PDF/Print Templates -->
+<div class="d-none">
+    <!-- ডেলিভারি শীট টেমপ্লেট -->
+    <div id="deliveryPrintArea" class="pdf-template">
+        <h3 style="text-align: center; color: #0d6efd;">স্টক ডেলিভারি রসিদ / চালান শীট</h3>
+        <hr>
+        <p><strong>আউটলেটের নাম:</strong> <span id="pdfOutletName"></span></p>
+        <p><strong>তারিখ:</strong> <span id="pdfDeliveryDate"></span></p>
+        <table border="1" cellspacing="0" cellpadding="8" style="width: 100%; text-align: center; margin-top: 15px;">
+            <thead>
+                <tr style="background-color: #f2f2f2;">
+                    <th>প্রোডাক্টের নাম</th>
+                    <th>ডেলিভারি পরিমাণ (পিস)</th>
+                </tr>
+            </thead>
+            <tbody id="pdfDeliveryBody"></tbody>
+        </table>
+    </div>
+
+    <!-- কারেন্ট স্টক শীট টেমপ্লেট -->
+    <div id="stockPrintArea" class="pdf-template">
+        <h3 style="text-align: center; color: #198754;">বর্তমান ওয়ারহাউজ স্টক শীট</h3>
+        <hr>
+        <p><strong>তারিখ:</strong> <span id="pdfStockDate"></span></p>
+        <table border="1" cellspacing="0" cellpadding="8" style="width: 100%; text-align: center; margin-top: 15px;">
+            <thead>
+                <tr style="background-color: #f2f2f2;">
+                    <th>প্রোডাক্টের নাম</th>
+                    <th>বর্তমান স্টক (পিস)</th>
+                </tr>
+            </thead>
+            <tbody id="pdfStockBody"></tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // প্রাথমিক প্রোডাক্ট ডাটা
+    let inventory = [
+        { id: 1, name: "টি-শার্ট (L Size)", stock: 150, deliveryCount: 0 },
+        { id: 2, name: "জিন্স প্যান্ট (Size 32)", stock: 80, deliveryCount: 0 },
+        { id: 3, name: "কজুয়াল শার্ট", stock: 120, deliveryCount: 0 },
+        { id: 4, name: "জুতো (Sneakers)", stock: 45, deliveryCount: 0 },
+        { id: 5, name: "জ্যাকেট", stock: 60, deliveryCount: 0 }
+    ];
+
+    // টেবিল রেন্ডার করা
+    function renderInventory() {
+        const tbody = document.getElementById("inventoryBody");
+        tbody.innerHTML = "";
+
+        inventory.forEach((item, index) => {
+            tbody.innerHTML += `
+                <tr>
+                    <td><input type="checkbox" class="product-select" data-id="${item.id}"></td>
+                    <td class="fw-bold">${item.name}</td>
+                    <td><span class="badge bg-primary fs-6">${item.stock}</span></td>
+                    <td>
+                        <div class="input-group input-group-sm justify-content-center">
+                            <input type="number" min="1" class="form-control me-1" id="addInput-${item.id}" placeholder="সংখ্যা" style="max-width: 90px;">
+                            <button class="btn btn-outline-success" onclick="addStock(${item.id})">+ যোগ করুন</button>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group input-group-sm justify-content-center">
+                            <input type="number" min="1" class="form-control me-1" id="deliverInput-${item.id}" placeholder="সংখ্যা" style="max-width: 90px;">
+                            <button class="btn btn-outline-danger" onclick="deliverStock(${item.id})">- ডেলিভারি</button>
+                        </div>
+                        ${item.deliveryCount > 0 ? `<small class="text-muted d-block mt-1">সর্বশেষ ডেলিভারি: ${item.deliveryCount} পিস</small>` : ''}
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    // ১. নতুন স্টক যোগ করা (সাপ্লায়ার)
+    function addStock(id) {
+        const input = document.getElementById(`addInput-${id}`);
+        const qty = parseInt(input.value);
+        if (isNaN(qty) || qty <= 0) {
+            alert("অনুগ্রহ করে একটি সঠিক সংখ্যা লিখুন।");
+            return;
+        }
+        const product = inventory.find(item => item.id === id);
+        product.stock += qty;
+        input.value = "";
+        renderInventory();
+    }
+
+    // ২. স্টক আউট / আউটলেটে ডেলিভারি দেওয়া
+    function deliverStock(id) {
+        const outlet = document.getElementById("outletSelect").value;
+        if (!outlet) {
+            alert("অনুগ্রহ করে আগে ওপরের ড্রপডাউন থেকে একটি আউটলেট সিলেক্ট করুন!");
+            return;
+        }
+
+        const input = document.getElementById(`deliverInput-${id}`);
+        const qty = parseInt(input.value);
+        if (isNaN(qty) || qty <= 0) {
+            alert("অনুগ্রহ করে একটি সঠিক সংখ্যা লিখুন।");
+            return;
+        }
+
+        const product = inventory.find(item => item.id === id);
+        if (qty > product.stock) {
+            alert("ওয়ারহাউজে পর্যাপ্ত স্টক নেই!");
+            return;
+        }
+
+        product.stock -= qty;
+        product.deliveryCount += qty; // বর্তমান সেশনের ডেলিভারি ট্র্যাকিং
+        input.value = "";
+        renderInventory();
+    }
+
+    // আউটলেট পরিবর্তনের সময় ডেলিভারি হিস্ট্রি রিসেট করা
+    function clearDeliverySheet() {
+        inventory.forEach(item => item.deliveryCount = 0);
+        renderInventory();
+    }
+
+    // অল চেক বক্স সিলেক্ট/আনসিলেক্ট
+    function toggleSelectAll(source) {
+        checkboxes = document.getElementsByClassName('product-select');
+        for(var i=0, n=checkboxes.length;i<n;i++) {
+            checkboxes[i].checked = source.checked;
+        }
+    }
+
+    // ৩. আউটলেট ডেলিভারি শীট জেনারেট ও PDF ডাউনলোড
+    function downloadDeliverySheetPDF() {
+        const outlet = document.getElementById("outletSelect").value;
+        if (!outlet) {
+            alert("কোনো আউটলেট সিলেক্ট করা হয়নি!");
+            return;
+        }
+
+        const deliveredItems = inventory.filter(item => item.deliveryCount > 0);
+        if (deliveredItems.length === 0) {
+            alert("এই মুহূর্তে এই আউটলেটে কোনো স্টক ডেলিভারি করা হয়নি!");
+            return;
+        }
+
+        document.getElementById("pdfOutletName").innerText = outlet;
+        document.getElementById("pdfDeliveryDate").innerText = new Date().toLocaleDateString('bn-BD');
+        
+        const pdfTbody = document.getElementById("pdfDeliveryBody");
+        pdfTbody.innerHTML = "";
+        deliveredItems.forEach(item => {
+            pdfTbody.innerHTML += `
+                <tr>
+                    <td>${item.name}</td>
+                    <td>${item.deliveryCount}</td>
+                </tr>
+            `;
+        });
+
+        const element = document.getElementById('deliveryPrintArea');
+        const opt = {
+            margin:       0.5,
+            filename:     `Delivery_Sheet_${outlet}.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save();
+    }
+
+    // ৪. সিলেক্টেড প্রোডাক্টের কারেন্ট স্টক শীট জেনারেট ও PDF ডাউনলোড
+    function downloadSelectedStockPDF() {
+        const checkboxes = document.querySelectorAll('.product-select:checked');
+        if (checkboxes.length === 0) {
+            alert("অনুগ্রহ করে অন্তত একটি প্রোডাক্ট সিলেক্ট করুন!");
+            return;
+        }
+
+        const selectedIds = Array.from(checkboxes).map(cb => parseInt(cb.getAttribute('data-id')));
+        const selectedProducts = inventory.filter(item => selectedIds.includes(item.id));
+
+        document.getElementById("pdfStockDate").innerText = new Date().toLocaleDateString('bn-BD');
+        
+        const pdfTbody = document.getElementById("pdfStockBody");
+        pdfTbody.innerHTML = "";
+        selectedProducts.forEach(item => {
+            pdfTbody.innerHTML += `
+                <tr>
+                    <td>${item.name}</td>
+                    <td>${item.stock}</td>
+                </tr>
+            `;
+        });
+
+        const element = document.getElementById('stockPrintArea');
+        const opt = {
+            margin:       0.5,
+            filename:     `Warehouse_Current_Stock.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save();
+    }
+
+    // প্রথমবার পেজ লোড করার সময় টেবিল দেখানো
+    renderInventory();
+</script>
+
+</body>
+</html>
