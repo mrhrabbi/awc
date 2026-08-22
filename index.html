@@ -3,8 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>তথ্যবহুল চ্যাটবট</title>
+    <title>প্রো ফটোকার্ড জেনারেটর</title>
+    <!-- Lucide Icons Library -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Html2Canvas for downloading image -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
+        :root {
+            --bg-color: #0f172a;
+            --panel-bg: #1e293b;
+            --accent-color: #6366f1;
+            --text-color: #f8fafc;
+            --border-color: #334155;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -13,167 +25,320 @@
         }
 
         body {
-            background-color: #f4f7f6;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             display: flex;
-            justify-content: center;
-            align-items: center;
             height: 100vh;
-        }
-
-        .chat-container {
-            width: 380px;
-            max-width: 100%;
-            height: 550px;
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
             overflow: hidden;
         }
 
-        .chat-header {
-            background-color: #0084ff;
-            color: white;
-            padding: 15px;
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .chat-box {
-            flex: 1;
-            padding: 15px;
+        /* Sidebar Styling */
+        .sidebar {
+            width: 380px;
+            background-color: var(--panel-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 20px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 20px;
         }
 
-        .message {
-            max-width: 80%;
-            padding: 10px 14px;
-            border-radius: 15px;
-            font-size: 14px;
-            line-height: 1.4;
-        }
-
-        .bot-message {
-            background-color: #e4e6eb;
-            color: #000;
-            align-self: flex-start;
-            border-bottom-left-radius: 2px;
-        }
-
-        .user-message {
-            background-color: #0084ff;
-            color: white;
-            align-self: flex-end;
-            border-bottom-right-radius: 2px;
-        }
-
-        .input-container {
+        .header {
             display: flex;
-            border-top: 1px solid #ddd;
-            padding: 10px;
-            background: #fff;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--accent-color);
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        input[type="text"] {
-            flex: 1;
+        .section-title {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #94a3b8;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 0.85rem;
+            color: #cbd5e1;
+        }
+
+        input[type="text"], textarea, select {
+            background: #0f172a;
+            border: 1px solid var(--border-color);
+            color: #fff;
             padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 20px;
+            border-radius: 6px;
             outline: none;
         }
 
-        button {
-            background-color: #0084ff;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            margin-left: 8px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-weight: bold;
+        input[type="text"]:focus, textarea:focus, select:focus {
+            border-color: var(--accent-color);
         }
 
-        button:hover {
-            background-color: #006bce;
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
         }
+
+        /* Preview Area */
+        .preview-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: #020617;
+            position: relative;
+        }
+
+        /* Canvas / Card Box */
+        .card-container {
+            width: 400px;
+            height: 500px;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            border-radius: 16px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .card-profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #ffffff;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-name-box {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .card-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .verified-badge {
+            color: #38bdf8;
+            display: inline-block;
+        }
+
+        .card-title {
+            font-size: 0.95rem;
+            color: #e2e8f0;
+            margin-bottom: 15px;
+        }
+
+        .card-bio {
+            font-size: 0.85rem;
+            color: #cbd5e1;
+            line-height: 1.4;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+            width: 100%;
+        }
+
+        .watermark {
+            position: absolute;
+            bottom: 10px;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 1px;
+        }
+
+        /* Buttons */
+        .btn-download {
+            margin-top: 20px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+            transition: transform 0.2s;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+        }
+
+        /* CSS Filters */
+        .filter-normal { filter: none; }
+        .filter-vintage { filter: sepia(0.5) contrast(1.2); }
+        .filter-bw { filter: grayscale(1); }
+        .filter-vibrant { filter: saturate(2); }
     </style>
 </head>
 <body>
 
-<div class="chat-container">
-    <div class="chat-header">সহযোগিতা চ্যাটবট</div>
-    <div class="chat-box" id="chatBox">
-        <div class="message bot-message">হ্যালো! আমি আপনাকে কীভাবে সাহায্য করতে পারি? (উদাহরণ: 'কোার্স', 'ঠিকানা', 'সময়')</div>
+    <!-- Sidebar Controls -->
+    <div class="sidebar">
+        <div class="header">
+            <i data-lucide="sparkles"></i>
+            <span>ফটোকার্ড জেনারেটর</span>
+        </div>
+
+        <!-- Layout Controls -->
+        <div class="control-group">
+            <div class="section-title">
+                <i data-lucide="layout"></i> থিম ও ক্যানভাস
+            </div>
+            <label>ব্যাকগ্রাউন্ড গ্রাডিয়েন্ট</label>
+            <select id="bgSelect" onchange="updateCardStyle()">
+                <option value="linear-gradient(135deg, #6366f1, #a855f7)">পার্পল ও বেগুনি</option>
+                <option value="linear-gradient(135deg, #3b82f6, #10b981)">নীল ও সবুজ</option>
+                <option value="linear-gradient(135deg, #f43f5e, #fb923c)">লাল ও কমলা</option>
+                <option value="linear-gradient(135deg, #0f172a, #1e293b)">ডার্ক ক্লাসিক</option>
+            </select>
+        </div>
+
+        <!-- Profile Details -->
+        <div class="control-group">
+            <div class="section-title">
+                <i data-lucide="user"></i> প্রোফাইল তথ্য
+            </div>
+            <label>ছবি আপলোড করুন</label>
+            <input type="file" id="imageInput" accept="image/*" onchange="loadUserImage(event)">
+
+            <label>নাম</label>
+            <input type="text" id="nameInput" value="জন ডো" oninput="updateText()">
+
+            <label>পদবি/টাইটেল</label>
+            <input type="text" id="titleInput" value="সফটওয়্যার ইঞ্জিনিয়ার" oninput="updateText()">
+
+            <label>বায়ো / ক্যাপশন</label>
+            <textarea id="bioInput" rows="3" oninput="updateText()">ডিজিটাল প্রোডাক্ট তৈরি করা এবং কোডিং সম্পর্কিত যেকোনো বিষয় আমার পছন্দ।</textarea>
+        </div>
+
+        <!-- Photo Filters -->
+        <div class="control-group">
+            <div class="section-title">
+                <i data-lucide="image"></i> ফটো ফিল্টার
+            </div>
+            <div class="grid-2">
+                <button onclick="setFilter('filter-normal')">Normal</button>
+                <button onclick="setFilter('filter-vintage')">Vintage</button>
+                <button onclick="setFilter('filter-bw')">B&W</button>
+                <button onclick="setFilter('filter-vibrant')">Vibrant</button>
+            </div>
+        </div>
+
+        <!-- Extras -->
+        <div class="control-group">
+            <div class="section-title">
+                <i data-lucide="shield-check"></i> অন্যান্য ফিচার
+            </div>
+            <label style="display: flex; align-items: center; gap: 8px;">
+                <input type="checkbox" id="badgeToggle" checked onchange="toggleVerifiedBadge()">
+                ভেরিফাইড ব্যাজ দেখাও
+            </label>
+            <label>ওয়াটারমার্ক</label>
+            <input type="text" id="watermarkInput" value="CREATED WITH PHOTOCARD" oninput="updateText()">
+        </div>
     </div>
-    <div class="input-container">
-        <input type="text" id="userInput" placeholder="এখানে লিখুন..." onkeypress="handleKeyPress(event)">
-        <button onclick="sendMessage()">➤</button>
+
+    <!-- Live Preview Area -->
+    <div class="preview-area">
+        <div id="photoCard" class="card-container">
+            <img id="cardProfileImg" class="card-profile-img filter-normal" src="https://via.placeholder.com/150" alt="Profile">
+            <div class="card-name-box">
+                <span id="cardName" class="card-name">জন ডো</span>
+                <i id="cardBadge" data-lucide="badge-check" class="verified-badge"></i>
+            </div>
+            <span id="cardTitle" class="card-title">সফটওয়্যার ইঞ্জিনিয়ার</span>
+            <p id="cardBio" class="card-bio">ডিজিটাল প্রোডাক্ট তৈরি করা এবং কোডিং সম্পর্কিত যেকোনো বিষয় আমার পছন্দ।</p>
+            <div id="cardWatermark" class="watermark">CREATED WITH PHOTOCARD</div>
+        </div>
+
+        <!-- Export Action Button -->
+        <button class="btn-download" onclick="downloadPhotoCard()">
+            <i data-lucide="download"></i> ডাউনলোড ফটোকার্ড (PNG)
+        </button>
     </div>
-</div>
 
-<script>
-    // প্রি-লোডেড তথ্য (Knowledge Base)
-    const knowledgeBase = {
-        "হ্যালো": "হ্যালো! কেমন আছেন? কীভাবে সাহায্য করতে পারি?",
-        "হাই": "হাই! আমি আপনাকে কীভাবে সাহায্য করতে পারি?",
-        "কোার্স": "আমাদের এখানে ওয়েব ডেভেলপমেন্ট, পাইথন এবং ডিজিটাল মার্কেটিং কোর্স চালু আছে।",
-        "ঠিকানা": "আমাদের অফিস ঢাকা, ধানমন্ডি ৩২ নম্বর রোডে অবস্থিত।",
-        "সময়": "আমাদের সেবা সপ্তাহের রবি থেকে বৃহস্পতিবার, সকাল ৯টা থেকে সন্ধ্যা ৬টা পর্যন্ত খোলা থাকে।",
-        "যোগাযোগ": "আপনি আমাদের ইমেইল করতে পারেন: support@example.com অথবা কল করুন: ০১৭০০০০০০০০",
-        "ধন্যবাদ": "আপনাকেও ধন্যবাদ! ভালো থাকবেন।"
-    };
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
 
-    function sendMessage() {
-        const inputField = document.getElementById("userInput");
-        const userText = inputField.value.trim();
-
-        if (userText === "") return;
-
-        // ইউজার মেসেজ দেখানো
-        appendMessage(userText, "user-message");
-        inputField.value = "";
-
-        // বট মেসেজ প্রসেসিং
-        setTimeout(() => {
-            const botResponse = getBotResponse(userText);
-            appendMessage(botResponse, "bot-message");
-        }, 500);
-    }
-
-    function getBotResponse(input) {
-        const cleanInput = input.toLowerCase();
-        
-        // তথ্য খোঁজা
-        for (let key in knowledgeBase) {
-            if (cleanInput.includes(key)) {
-                return knowledgeBase[key];
-            }
+        // Real-time Text Updates
+        function updateText() {
+            document.getElementById('cardName').innerText = document.getElementById('nameInput').value;
+            document.getElementById('cardTitle').innerText = document.getElementById('titleInput').value;
+            document.getElementById('cardBio').innerText = document.getElementById('bioInput').value;
+            document.getElementById('cardWatermark').innerText = document.getElementById('watermarkInput').value;
         }
-        
-        // তথ্য না পাওয়া গেলে ডিফল্ট উত্তর
-        return "দুঃখিত, এই বিষয়ে আমার কাছে তথ্য নেই। আপনি চাইলে আমাদের সাপোর্ট নাম্বারে যোগাযোগ করতে পারেন।";
-    }
 
-    function appendMessage(text, className) {
-        const chatBox = document.getElementById("chatBox");
-        const messageElement = document.createElement("div");
-        messageElement.classList.add("message", className);
-        messageElement.innerText = text;
-        chatBox.appendChild(messageElement);
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    function handleKeyPress(event) {
-        if (event.key === "Enter") {
-            sendMessage();
+        // Image Upload Functionality
+        function loadUserImage(event) {
+            const imgElement = document.getElementById('cardProfileImg');
+            imgElement.src = URL.createObjectURL(event.target.files[0]);
         }
-    }
-</script>
 
+        // Background Style Changer
+        function updateCardStyle() {
+            const selectedBg = document.getElementById('bgSelect').value;
+            document.getElementById('photoCard').style.background = selectedBg;
+        }
+
+        // Toggle Verified Badge
+        function toggleVerifiedBadge() {
+            const badge = document.getElementById('cardBadge');
+            const isChecked = document.getElementById('badgeToggle').checked;
+            badge.style.display = isChecked ? 'inline-block' : 'none';
+        }
+
+        // Filter Application
+        function setFilter(filterClass) {
+            const img = document.getElementById('cardProfileImg');
+            img.className = 'card-profile-img ' + filterClass;
+        }
+
+        // Download Card as PNG
+        function downloadPhotoCard() {
+            const card = document.getElementById('photoCard');
+            html2canvas(card, { scale: 2 }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'photocard.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+    </script>
 </body>
 </html>
