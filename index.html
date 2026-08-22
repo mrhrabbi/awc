@@ -17,7 +17,6 @@
         :root {
             --primary: #2563eb;
             --primary-hover: #1d4ed8;
-            --secondary: #64748b;
             --success: #10b981;
             --success-hover: #059669;
             --danger: #ef4444;
@@ -29,7 +28,8 @@
             --border: #e2e8f0;
             --radius-lg: 16px;
             --radius-md: 10px;
-            --shadow: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -2px rgba(0,0,0,0.025);
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05);
+            --shadow-hover: 0 10px 15px -3px rgba(0,0,0,0.1);
         }
 
         * {
@@ -43,7 +43,6 @@
             background-color: var(--background);
             color: var(--text-main);
             padding: 24px 16px 60px 16px;
-            line-height: 1.5;
         }
 
         .container {
@@ -51,7 +50,7 @@
             margin: 0 auto;
         }
 
-        /* Header Layout */
+        /* Header Styling */
         .app-header {
             display: flex;
             flex-wrap: wrap;
@@ -80,10 +79,8 @@
         .brand-title h1 {
             font-size: 22px;
             font-weight: 700;
-            color: var(--text-main);
         }
 
-        /* Language Toggle Pill */
         .lang-selector {
             display: flex;
             background: #f1f5f9;
@@ -109,7 +106,7 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
-        /* Card Section */
+        /* Hero / Outlet Card */
         .outlet-card {
             background: var(--surface);
             border-radius: var(--radius-lg);
@@ -148,18 +145,12 @@
             background-color: #fff;
         }
 
-        .custom-select:focus, .custom-input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-        }
-
         .btn-group-actions {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
         }
 
-        /* Buttons & Dropdowns */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -174,12 +165,10 @@
             transition: all 0.2s ease;
         }
 
-        .btn-primary { background: var(--primary); color: white; }
         .btn-success { background: var(--success); color: white; }
         .btn-danger { background: var(--danger); color: white; }
         .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-main); }
         .btn-outline:hover { background: #f1f5f9; }
-        .btn-sm { padding: 6px 12px; font-size: 12px; }
 
         .dropdown {
             position: relative;
@@ -212,95 +201,120 @@
         .dropdown-menu a:hover { background-color: #f8fafc; }
         .dropdown:hover .dropdown-menu { display: block; }
 
-        /* Inventory Table */
-        .card-table {
-            background: var(--surface);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            overflow: hidden;
+        /* Card Section Header */
+        .section-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
         }
 
-        .table-header-title {
-            padding: 20px 24px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .table-responsive { width: 100%; overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; text-align: left; }
-
-        th {
-            background: #f8fafc;
-            padding: 14px 20px;
-            font-size: 12px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            border-bottom: 1px solid var(--border);
-        }
-
-        td {
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border);
-            vertical-align: middle;
-            font-size: 14px;
-        }
-
-        .stock-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 13px;
-            background: #e0e7ff;
-            color: #3730a3;
-        }
-
-        .input-action-group {
+        .select-all-box {
             display: flex;
             align-items: center;
             gap: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
         }
 
-        .input-action-group input { width: 80px; }
+        /* GRID PRODUCT CARD SYSTEM */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
 
-        .last-delivery-tag {
-            display: block;
-            font-size: 11px;
+        .product-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .product-card:hover {
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary);
+        }
+
+        .product-card.selected {
+            border: 2px solid var(--primary);
+            background-color: #f0f7ff;
+        }
+
+        .card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .product-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .card-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        .stock-display {
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .stock-label {
+            font-size: 13px;
             color: var(--text-muted);
-            margin-top: 4px;
+            font-weight: 500;
         }
 
-        /* Mobile Responsive adjustments */
-        @media (max-width: 768px) {
-            body { padding: 12px 10px 40px 10px; }
-            .btn-group-actions, .dropdown, .btn { width: 100%; }
-            .dropdown-menu { width: 100%; }
+        .stock-val {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary);
+        }
 
-            .table-responsive table, thead, tbody, th, td, tr { display: block; }
-            thead tr { position: absolute; top: -9999px; left: -9999px; }
-            tr {
-                border: 1px solid var(--border);
-                border-radius: var(--radius-md);
-                margin-bottom: 16px;
-                padding: 12px;
-                background: var(--surface);
-            }
-            td {
-                border: none;
-                border-bottom: 1px solid #f1f5f9;
-                padding: 10px 0;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-            td::before {
-                content: attr(data-label);
-                font-weight: 700;
-                font-size: 12px;
-                color: var(--text-muted);
-                text-transform: uppercase;
-            }
+        /* Actions inside Card */
+        .action-box {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .input-row input {
+            text-align: center;
+            font-weight: 600;
+            padding: 8px;
+        }
+
+        .delivery-info {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: right;
+            margin-top: 4px;
         }
 
         /* Export Templates Layout */
@@ -317,6 +331,13 @@
         .pdf-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         .pdf-table th, .pdf-table td { border: 1px solid #cbd5e1; padding: 10px; text-align: left; }
         .pdf-table th { background: #f1f5f9; }
+
+        @media (max-width: 768px) {
+            body { padding: 12px 10px 40px 10px; }
+            .btn-group-actions, .dropdown, .btn { width: 100%; }
+            .dropdown-menu { width: 100%; }
+            .products-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -373,28 +394,20 @@
         </div>
     </section>
 
-    <main class="card-table">
-        <div class="table-header-title">
-            <h3 data-key="tableTitle">Warehouse Stock List</h3>
-        </div>
-        <div class="table-responsive">
-            <table>
-                <thead>
-                    <tr>
-                        <th style="width: 40px;"><input type="checkbox" id="selectAll" onclick="toggleSelectAll(this)"></th>
-                        <th data-key="thProductName">Product Name</th>
-                        <th data-key="thCurrentStock">Current Stock</th>
-                        <th data-key="thAddStock">Add Stock (Supplier)</th>
-                        <th data-key="thDeliverStock">Stock Out (Delivery)</th>
-                    </tr>
-                </thead>
-                <tbody id="inventoryBody"></tbody>
-            </table>
-        </div>
-    </main>
+    <!-- Cards Header Section -->
+    <div class="section-bar">
+        <h3 data-key="tableTitle" style="font-weight: 700;">Warehouse Products</h3>
+        <label class="select-all-box">
+            <input type="checkbox" id="selectAll" class="card-checkbox" onclick="toggleSelectAll(this)">
+            <span data-key="selectAllText">Select All</span>
+        </label>
+    </div>
+
+    <!-- Product Grid Container -->
+    <main class="products-grid" id="inventoryGrid"></main>
 </div>
 
-<!-- Export Templates (Hidden) -->
+<!-- Hidden Export Templates -->
 <div class="pdf-template-wrapper">
     <div id="stockExportTemplate" class="pdf-template">
         <div class="pdf-header">
@@ -431,7 +444,6 @@
 </div>
 
 <script>
-    // Language Translations
     const translations = {
         en: {
             appTitle: "Warehouse Inventory System",
@@ -441,13 +453,12 @@
             deliverySheetBtn: "Outlet Delivery Sheet",
             downloadPDF: "Download PDF",
             downloadImage: "Download Image (PNG)",
-            tableTitle: "Warehouse Stock List",
+            tableTitle: "Warehouse Products",
+            selectAllText: "Select All",
             thProductName: "Product Name",
             thCurrentStock: "Current Stock",
-            thAddStock: "Add Stock (Supplier)",
-            thDeliverStock: "Stock Out (Delivery)",
-            addBtn: "Add",
-            deliverBtn: "Deliver",
+            addBtn: "Add Stock",
+            deliverBtn: "Deliver Out",
             qtyPlaceholder: "Qty",
             lastDelivery: "Last Delivery:",
             pdfStockTitle: "Warehouse Current Stock Report",
@@ -469,13 +480,12 @@
             deliverySheetBtn: "আউটলেট ডেলিভারি শীট",
             downloadPDF: "পিডিএফ ডাউনলোড (PDF)",
             downloadImage: "ছবি ডাউনলোড (PNG)",
-            tableTitle: "ওয়ারহাউজ ইনভেন্টরি তালিকা",
+            tableTitle: "ওয়ারহাউজ প্রোডাক্টস",
+            selectAllText: "সব সিলেক্ট করুন",
             thProductName: "প্রোডাক্টের নাম",
             thCurrentStock: "বর্তমান স্টক",
-            thAddStock: "নতুন স্টক যোগ (সাপ্লায়ার)",
-            thDeliverStock: "স্টক আউট (ডেলিভারি)",
-            addBtn: "যোগ",
-            deliverBtn: "ডেলিভারি",
+            addBtn: "স্টক যোগ করুন",
+            deliverBtn: "ডেলিভারি দিন",
             qtyPlaceholder: "সংখ্যা",
             lastDelivery: "সর্বশেষ ডেলিভারি:",
             pdfStockTitle: "বর্তমান ওয়ারহাউজ স্টক রিপোর্ট",
@@ -497,13 +507,12 @@
             deliverySheetBtn: "Lembaran Penghantaran Outlet",
             downloadPDF: "Muat Turun PDF",
             downloadImage: "Muat Turun Gambar (PNG)",
-            tableTitle: "Senarai Stok Gudang",
+            tableTitle: "Produk Gudang",
+            selectAllText: "Pilih Semua",
             thProductName: "Nama Produk",
             thCurrentStock: "Stok Semasa",
-            thAddStock: "Tambah Stok (Pembekal)",
-            thDeliverStock: "Stok Keluar (Penghantaran)",
-            addBtn: "Tambah",
-            deliverBtn: "Hantar",
+            addBtn: "Tambah Stok",
+            deliverBtn: "Hantar Stok",
             qtyPlaceholder: "Kuantiti",
             lastDelivery: "Penghantaran Terakhir:",
             pdfStockTitle: "Laporan Stok Semasa Gudang",
@@ -543,37 +552,58 @@
         renderInventory();
     }
 
+    // Render Cards View
     function renderInventory() {
-        const tbody = document.getElementById("inventoryBody");
-        tbody.innerHTML = "";
+        const grid = document.getElementById("inventoryGrid");
+        grid.innerHTML = "";
         const t = translations[currentLang];
 
         inventory.forEach((item) => {
-            tbody.innerHTML += `
-                <tr>
-                    <td><input type="checkbox" class="product-select" data-id="${item.id}"></td>
-                    <td data-label="${t.thProductName}" style="font-weight: 600;">${item.name}</td>
-                    <td data-label="${t.thCurrentStock}"><span class="stock-badge">${item.stock}</span></td>
-                    <td data-label="${t.thAddStock}">
-                        <div class="input-action-group">
+            grid.innerHTML += `
+                <div class="product-card" id="card-${item.id}">
+                    <div>
+                        <div class="card-top">
+                            <span class="product-name">${item.name}</span>
+                            <input type="checkbox" class="card-checkbox product-select" data-id="${item.id}" onchange="toggleCardSelect(${item.id}, this.checked)">
+                        </div>
+                        <div class="stock-display">
+                            <span class="stock-label">${t.thCurrentStock}</span>
+                            <span class="stock-val">${item.stock} Pcs</span>
+                        </div>
+                    </div>
+                    
+                    <div class="action-box">
+                        <!-- Add Stock Row -->
+                        <div class="input-row">
                             <input type="number" min="1" class="custom-input" id="addInput-${item.id}" placeholder="${t.qtyPlaceholder}">
-                            <button class="btn btn-success btn-sm" onclick="addStock(${item.id})"><i class="fa-solid fa-plus"></i> ${t.addBtn}</button>
+                            <button class="btn btn-success" style="padding: 8px 12px;" onclick="addStock(${item.id})"><i class="fa-solid fa-plus"></i> ${t.addBtn}</button>
                         </div>
-                    </td>
-                    <td data-label="${t.thDeliverStock}">
-                        <div class="input-action-group">
+                        <!-- Deliver Stock Row -->
+                        <div class="input-row">
                             <input type="number" min="1" class="custom-input" id="deliverInput-${item.id}" placeholder="${t.qtyPlaceholder}">
-                            <button class="btn btn-danger btn-sm" onclick="deliverStock(${item.id})"><i class="fa-solid fa-truck"></i> ${t.deliverBtn}</button>
+                            <button class="btn btn-danger" style="padding: 8px 12px;" onclick="deliverStock(${item.id})"><i class="fa-solid fa-truck"></i> ${t.deliverBtn}</button>
                         </div>
-                        ${item.deliveryCount > 0 ? `<span class="last-delivery-tag">${t.lastDelivery} ${item.deliveryCount} pcs</span>` : ''}
-                    </td>
-                </tr>
+                        ${item.deliveryCount > 0 ? `<div class="delivery-info">${t.lastDelivery} <strong>${item.deliveryCount} pcs</strong></div>` : ''}
+                    </div>
+                </div>
             `;
         });
     }
 
+    function toggleCardSelect(id, isChecked) {
+        const card = document.getElementById(`card-${id}`);
+        if(isChecked) {
+            card.classList.add('selected');
+        } else {
+            card.classList.remove('selected');
+        }
+    }
+
     function toggleSelectAll(source) {
-        document.querySelectorAll('.product-select').forEach(cb => cb.checked = source.checked);
+        document.querySelectorAll('.product-select').forEach(cb => {
+            cb.checked = source.checked;
+            toggleCardSelect(cb.getAttribute('data-id'), source.checked);
+        });
     }
 
     function addStock(id) {
