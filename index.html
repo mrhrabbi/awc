@@ -1,283 +1,313 @@
-<!DOCTYPE1 html>
-<html lang="bn">
+<!DOCTYPE html>
+<html lang="bn" data-theme="light">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>বহুভাষিক ক্যালেন্ডার</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>মির রাব্বি হোসেন</title>
+    <!-- SolaimanLipi Font -->
+    <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #e0eafc, #cfdef3);
+            --text-color: #2c3e50;
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
 
-    body {
-      background: #f0f2f5;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 15px;
-    }
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            --text-color: #f1f1f1;
+            --glass-bg: rgba(0, 0, 0, 0.3);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
 
-    .calendar-card {
-      background: #ffffff;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      width: 100%;
-      max-width: 900px;
-      padding: 24px;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'SolaimanLipi', sans-serif;
+            transition: background 0.3s, color 0.3s;
+        }
 
-    /* Header Styling */
-    .calendar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-      padding-bottom: 16px;
-      border-bottom: 2px solid #edf2f7;
-    }
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-    .month-display {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #1a202c;
-    }
+        /* Header */
+        header {
+            width: 100%;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-    .nav-btn {
-      background: #4a5568;
-      color: #fff;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: background 0.2s ease;
-    }
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
 
-    .nav-btn:hover {
-      background: #2d3748;
-    }
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
 
-    /* Grid Layout */
-    .weekdays-grid, .days-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 8px;
-    }
+        .theme-btn, .menu-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    .weekday {
-      text-align: center;
-      font-weight: 700;
-      color: #718096;
-      padding: 8px 0;
-      font-size: 0.9rem;
-    }
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -250px;
+            width: 250px;
+            height: 100%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            border-left: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            z-index: 200;
+            transition: right 0.3s ease;
+            padding: 20px;
+        }
 
-    /* Day Box Styling */
-    .day-box {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 10px;
-      min-height: 90px;
-      padding: 6px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: transform 0.1s ease, border-color 0.2s ease;
-    }
+        .sidebar.active {
+            right: 0;
+        }
 
-    .day-box:hover {
-      border-color: #3182ce;
-    }
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+            float: right;
+        }
 
-    .day-box.empty {
-      background: transparent;
-      border: none;
-    }
+        .sidebar-links {
+            list-style: none;
+            margin-top: 50px;
+        }
 
-    .day-box.today {
-      background: #ebf8ff;
-      border: 2px solid #3182ce;
-    }
+        .sidebar-links li {
+            margin: 20px 0;
+        }
 
-    /* Languages within cell */
-    .top-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
+        .sidebar-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 1.2rem;
+        }
 
-    .english-num {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #2d3748;
-    }
+        /* Container */
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin-top: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
 
-    .arabic-num {
-      font-size: 0.85rem;
-      color: #2b6cb0;
-      direction: rtl;
-    }
+        /* Date & Time Box */
+        .time-box {
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+        }
 
-    .bottom-row {
-      text-align: right;
-    }
+        .clock {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
 
-    .bangla-num {
-      font-size: 0.95rem;
-      color: #2f855a;
-      font-weight: 600;
-    }
+        .date-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            font-size: 1.1rem;
+        }
 
-    /* Mobile Responsive Styles */
-    @media (max-width: 600px) {
-      .calendar-card {
-        padding: 12px;
-      }
+        /* Hadith Glassmorphism Card with Animation */
+        .hadith-card {
+            width: 100%;
+            padding: 30px;
+            text-align: center;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 20px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            animation: pulseGlow 4s infinite alternate;
+            position: relative;
+        }
 
-      .month-display {
-        font-size: 1.1rem;
-      }
+        .hadith-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #ffb703;
+        }
 
-      .nav-btn {
-        padding: 8px 12px;
-        font-size: 0.85rem;
-      }
+        .hadith-text {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
 
-      .weekdays-grid, .days-grid {
-        gap: 4px;
-      }
+        .hadith-ref {
+            font-size: 1rem;
+            opacity: 0.8;
+            font-style: italic;
+        }
 
-      .day-box {
-        min-height: 65px;
-        padding: 4px;
-      }
-
-      .english-num {
-        font-size: 0.9rem;
-      }
-
-      .arabic-num {
-        font-size: 0.75rem;
-      }
-
-      .bangla-num {
-        font-size: 0.8rem;
-      }
-    }
-  </style>
+        /* Animation */
+        @keyframes pulseGlow {
+            0% {
+                transform: translateY(0);
+                box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            }
+            100% {
+                transform: translateY(-5px);
+                box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.3);
+            }
+        }
+    </style>
 </head>
 <body>
 
-  <div class="calendar-card">
-    <div class="calendar-header">
-      <button class="nav-btn" onclick="changeMonth(-1)">❮ পূর্ববর্তী</button>
-      <div class="month-display" id="monthDisplay"></div>
-      <button class="nav-btn" onclick="changeMonth(1)">পরবর্তী ❯</button>
+    <!-- Header -->
+    <header>
+        <div class="header-title">মীর রাব্বি হোসেন</div>
+        <div class="header-controls">
+            <button class="theme-btn" onclick="toggleTheme()" id="themeIcon">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+            <button class="menu-btn" onclick="toggleSidebar()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <button class="close-btn" onclick="toggleSidebar()">&times;</button>
+        <ul class="sidebar-links">
+            <li><a href="#"><i class="fa-solid fa-house"></i> হোম</a></li>
+            <li><a href="#"><i class="fa-solid fa-book-open"></i> হাদিস</a></li>
+            <li><a href="#"><i class="fa-solid fa-user"></i> প্রোফাইল</a></li>
+        </ul>
     </div>
 
-    <div class="weekdays-grid">
-      <div class="weekday">রবি</div>
-      <div class="weekday">সোম</div>
-      <div class="weekday">মঙ্গল</div>
-      <div class="weekday">বুধ</div>
-      <div class="weekday">বৃহঃ</div>
-      <div class="weekday">শুক্র</div>
-      <div class="weekday">শনি</div>
+    <!-- Main Content -->
+    <div class="container">
+        
+        <!-- Time and Date Section -->
+        <div class="time-box">
+            <div class="clock" id="clock">00:00:00</div>
+            <div class="date-list">
+                <span id="engDate">ইংরেজি: -</span> |
+                <span id="banglaDate">বাংলা: -</span> |
+                <span id="hijriDate">আরবি: -</span>
+            </div>
+        </div>
+
+        <!-- Animated Hadith Glass Box -->
+        <div class="hadith-card">
+            <div class="hadith-icon">
+                <i class="fa-solid fa-quote-left"></i>
+            </div>
+            <div class="hadith-text">
+                "উত্তম কদাচার বর্জন করা এবং উত্তম চরিত্র গ্রহণ করাই হলো প্রকৃত ধার্মিকতা।"
+            </div>
+            <div class="hadith-ref">— সহীহ মুসলিম</div>
+        </div>
+
     </div>
 
-    <div class="days-grid" id="daysGrid"></div>
-  </div>
-
-  <script>
-    let currentDate = new Date();
-
-    const enDigits = ['0','1','2','3','4','5','6','7','8','9'];
-    const bnDigits = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
-    const arDigits = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩'];
-
-    function toBnDigit(num) {
-      return num.toString().replace(/\d/g, d => bnDigits[d]);
-    }
-
-    function toArDigit(num) {
-      return num.toString().replace(/\d/g, d => arDigits[d]);
-    }
-
-    function renderCalendar() {
-      const year = currentDate.getFullYear();
-      const month = currentDate.getMonth();
-
-      const firstDay = new Date(year, month, 1);
-      const lastDay = new Date(year, month + 1, 0);
-
-      const startingDay = firstDay.getDay();
-      const totalDays = lastDay.getDate();
-
-      const monthDisplay = document.getElementById('monthDisplay');
-      const daysGrid = document.getElementById('daysGrid');
-
-      // Header English & Bangla Month Name
-      const monthNameEn = currentDate.toLocaleString('en-US', { month: 'long', year: 'numeric' });
-      const monthNameBn = currentDate.toLocaleString('bn-BD', { month: 'long', year: 'numeric' });
-      
-      monthDisplay.innerHTML = `${monthNameBn} <span style="font-size:0.8em; color:#718096;">(${monthNameEn})</span>`;
-
-      daysGrid.innerHTML = '';
-
-      // Empty spaces for previous month days
-      for (let i = 0; i < startingDay; i++) {
-        const emptyCell = document.createElement('div');
-        emptyCell.classList.add('day-box', 'empty');
-        daysGrid.appendChild(emptyCell);
-      }
-
-      const today = new Date();
-
-      // Render days
-      for (let day = 1; day <= totalDays; day++) {
-        const cellDate = new Date(year, month, day);
-        const dayCell = document.createElement('div');
-        dayCell.classList.add('day-box');
-
-        if (cellDate.toDateString() === today.toDateString()) {
-          dayCell.classList.add('today');
+    <script>
+        // Toggle Dark/Light Mode
+        function toggleTheme() {
+            const html = document.documentElement;
+            const themeIcon = document.getElementById('themeIcon');
+            if (html.getAttribute('data-theme') === 'light') {
+                html.setAttribute('data-theme', 'dark');
+                themeIcon.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            } else {
+                html.setAttribute('data-theme', 'light');
+                themeIcon.innerHTML = '<i class="fa-solid fa-moon"></i>';
+            }
         }
 
-        // Arabic Date Calculation (Intl API)
-        let arabicDay = '';
-        try {
-          const hijriFormatter = new Intl.DateTimeFormat('ar-TN-u-ca-islamic', { day: 'numeric' });
-          arabicDay = hijriFormatter.format(cellDate);
-        } catch (e) {
-          arabicDay = toArDigit(day); // Fallback
+        // Toggle Sidebar
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
         }
 
-        dayCell.innerHTML = `
-          <div class="top-row">
-            <span class="english-num">${day}</span>
-            <span class="arabic-num">${arabicDay}</span>
-          </div>
-          <div class="bottom-row">
-            <span class="bangla-num">${toBnDigit(day)}</span>
-          </div>
-        `;
+        // Clock & Date Functions
+        function updateDateTime() {
+            const now = new Date();
+            
+            // Time
+            const timeStr = now.toLocaleTimeString('bn-BD', { hour12: true });
+            const dayName = now.toLocaleDateString('bn-BD', { weekday: 'long' });
+            document.getElementById('clock').innerText = `${dayName}, ${timeStr}`;
 
-        daysGrid.appendChild(dayCell);
-      }
-    }
+            // English Date (in Bengali Numbers)
+            const engDate = now.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' });
+            document.getElementById('engDate').innerText = `ইংরেজি: ${engDate}`;
 
-    function changeMonth(direction) {
-      currentDate.setMonth(currentDate.getMonth() + direction);
-      renderCalendar();
-    }
+            // Bangla & Hijri Dates using Intl Calendar
+            try {
+                const banglaFormatter = new Intl.DateTimeFormat('bn-BD-u-ca-bengali', { day: 'numeric', month: 'long', year: 'numeric' });
+                document.getElementById('banglaDate').innerText = `বাংলা: ${banglaFormatter.format(now)}`;
 
-    // Initial Render
-    renderCalendar();
-  </script>
+                const hijriFormatter = new Intl.DateTimeFormat('bn-BD-u-ca-islamic-umalqura', { day: 'numeric', month: 'long', year: 'numeric' });
+                document.getElementById('hijriDate').innerText = `আরবি: ${hijriFormatter.format(now)}`;
+            } catch (e) {
+                document.getElementById('banglaDate').innerText = `বাংলা: তারিখ নির্ধারণে অক্ষম`;
+                document.getElementById('hijriDate').innerText = `আরবি: তারিখ নির্ধারণে অক্ষম`;
+            }
+        }
 
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+    </script>
 </body>
 </html>
