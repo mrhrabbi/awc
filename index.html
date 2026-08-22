@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>রাব্বি কম্পিউটার পয়েন্ট - CV & Resume Builder</title>
+    <title>রাব্বি কম্পিউটার পয়েন্ট - CV, Resume & Biodata Builder</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- html2pdf.js & html2canvas for PDF and Image Download -->
+    <!-- html2pdf.js & html2canvas -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
@@ -20,13 +20,13 @@
             background-color: #f3f4f6;
         }
 
-        /* Prevent Print & Screenshot visually */
+        /* Prevent Print Visual Glitches */
         @media print {
             .no-print { display: none !important; }
             #cv-preview { box-shadow: none !important; width: 100% !important; margin: 0 !important; }
         }
 
-        /* Standard A4 Paper Ratio Aspect for Preview */
+        /* Standard A4 Paper Ratio */
         .a4-paper {
             width: 210mm;
             min-height: 297mm;
@@ -40,19 +40,18 @@
         ::-webkit-scrollbar-thumb { background: #9ca3af; border-radius: 4px; }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col no-screen-shot">
+<body class="bg-gray-100 min-h-screen flex flex-col">
 
     <!-- Header Section -->
     <header class="bg-indigo-900 text-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-            <!-- Left Logo/Title -->
             <div class="flex items-center space-x-3">
                 <i class="fa-solid fa-file-invoice text-2xl text-yellow-400"></i>
-                <h1 class="text-xl md:text-2xl font-bold tracking-wide">রাব্বি কম্পিউটার পয়েন্ট</h1>
+                <h1 class="text-xl md:text-2xl font-bold tracking-wide" id="site-title">রাব্বি কম্পিউটার পয়েন্ট</h1>
             </div>
-            <!-- Right Actions -->
             <div class="flex items-center space-x-4">
-                <select id="langSelect" class="bg-indigo-800 text-white px-3 py-1 rounded text-sm outline-none border border-indigo-700">
+                <!-- Language Selector Switcher -->
+                <select id="langSelect" onchange="changeLanguage(this.value)" class="bg-indigo-800 text-white px-3 py-1 rounded text-sm outline-none border border-indigo-700 cursor-pointer font-bold">
                     <option value="bn">বাংলা</option>
                     <option value="en">English</option>
                 </select>
@@ -64,108 +63,103 @@
     </header>
 
     <!-- Top Ads Banner Option -->
-    <div class="bg-gradient-to-r from-yellow-100 to-amber-200 border-b border-amber-300 py-2 text-center text-sm font-medium text-amber-900 no-print">
-        <p>📢 [বিজ্ঞাপন ব্যানার]: রাব্বি কম্পিউটার পয়েন্টে স্বল্পমূল্যে সিভি প্রসেসিং ও সকল প্রিন্টিং সেবা পাওয়া যায়!</p>
+    <div class="bg-gradient-to-r from-yellow-100 to-amber-200 border-b border-amber-300 py-2 text-center text-sm font-medium text-amber-900 no-print" id="top-ad">
+        📢 [বিজ্ঞাপন ব্যানার]: রাব্বি কম্পিউটার পয়েন্টে স্বল্পমূল্যে সিভি প্রসেসিং ও সকল প্রিন্টিং সেবা পাওয়া যায়!
     </div>
 
-    <!-- Sub Header Category Options (Biodata, Resume, CV) -->
+    <!-- Category Tabs -->
     <div class="bg-white shadow-sm border-b no-print">
         <div class="max-w-4xl mx-auto flex justify-around p-2 text-sm md:text-base font-semibold text-gray-700">
             <button onclick="selectCategory('biodata')" id="cat-biodata" class="category-btn border-b-2 border-indigo-600 text-indigo-600 px-4 py-2">
-                <i class="fa-solid fa-ring mr-1"></i> বায়োডাটা
+                <i class="fa-solid fa-ring mr-1"></i> <span id="tab-biodata">বায়োডাটা</span>
             </button>
             <button onclick="selectCategory('resume')" id="cat-resume" class="category-btn px-4 py-2 hover:text-indigo-600">
-                <i class="fa-solid fa-briefcase mr-1"></i> রিজিউমি
+                <i class="fa-solid fa-briefcase mr-1"></i> <span id="tab-resume">রিজিউমি</span>
             </button>
             <button onclick="selectCategory('cv')" id="cat-cv" class="category-btn px-4 py-2 hover:text-indigo-600">
-                <i class="fa-solid fa-graduation-cap mr-1"></i> কারিকুলাম ভিটা (CV)
+                <i class="fa-solid fa-graduation-cap mr-1"></i> <span id="tab-cv">কারিকুলাম ভিটা (CV)</span>
             </button>
         </div>
     </div>
 
-    <!-- Main Content Builder Container -->
+    <!-- Main Container -->
     <div class="max-w-7xl mx-auto px-2 md:px-4 py-6 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-        <!-- Form Controller (Left Column) -->
+        <!-- Form Controller (Left) -->
         <div class="lg:col-span-5 bg-white p-5 rounded-lg shadow space-y-6 no-print overflow-y-auto max-h-[85vh]">
-            <h2 class="text-lg font-bold border-b pb-2 text-gray-800"><i class="fa-solid fa-sliders text-indigo-600"></i> তথ্য যোগ ও এডিট করুন</h2>
+            <h2 class="text-lg font-bold border-b pb-2 text-gray-800"><i class="fa-solid fa-sliders text-indigo-600"></i> <span id="lbl-form-title">তথ্য যোগ ও এডিট করুন</span></h2>
 
-            <!-- Design Template Picker (5-6 Designs per category) -->
+            <!-- Design Picker -->
             <div>
-                <label class="block text-sm font-semibold mb-2">ডিজাইন টেমপ্লেট নির্বাচন করুন:</label>
-                <div class="grid grid-cols-3 gap-2" id="design-picker">
-                    <!-- Dynamic Designs Inserted Here -->
-                </div>
+                <label class="block text-sm font-semibold mb-2" id="lbl-select-template">ডিজাইন টেমপ্লেট নির্বাচন করুন:</label>
+                <div class="grid grid-cols-3 gap-2" id="design-picker"></div>
             </div>
 
-            <!-- Profile & Signature Upload -->
+            <!-- Uploads -->
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-xs font-semibold mb-1">ছবি আপলোড</label>
+                    <label class="block text-xs font-semibold mb-1" id="lbl-photo">ছবি আপলোড</label>
                     <input type="file" id="photoInput" accept="image/*" class="w-full text-xs border p-1 rounded">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold mb-1">স্বাক্ষর (Signature)</label>
+                    <label class="block text-xs font-semibold mb-1" id="lbl-sig">স্বাক্ষর আপলোড</label>
                     <input type="file" id="sigInput" accept="image/*" class="w-full text-xs border p-1 rounded">
                 </div>
             </div>
 
-            <!-- Dynamic Form Fields -->
+            <!-- Input Fields -->
             <div class="space-y-4">
-                <!-- Personal Data -->
                 <div class="border p-3 rounded">
-                    <h3 class="font-bold text-sm text-indigo-700 mb-2">ব্যক্তিগত তথ্য</h3>
-                    <input type="text" id="name" placeholder="পূর্ণ নাম" class="w-full border p-2 text-sm rounded mb-2">
-                    <input type="text" id="father" placeholder="পিতার নাম" class="w-full border p-2 text-sm rounded mb-2">
-                    <input type="text" id="mother" placeholder="মাতার নাম" class="w-full border p-2 text-sm rounded mb-2">
-                    <input type="text" id="phone" placeholder="মোবাইল নম্বর" class="w-full border p-2 text-sm rounded mb-2">
-                    <input type="email" id="email" placeholder="ইমেইল" class="w-full border p-2 text-sm rounded mb-2">
-                    <textarea id="address" placeholder="বর্তমান ও স্থায়ী ঠিকানা" class="w-full border p-2 text-sm rounded h-16"></textarea>
+                    <h3 class="font-bold text-sm text-indigo-700 mb-2" id="lbl-personal-info">ব্যক্তিগত তথ্য</h3>
+                    <input type="text" id="name" class="w-full border p-2 text-sm rounded mb-2">
+                    <input type="text" id="father" class="w-full border p-2 text-sm rounded mb-2">
+                    <input type="text" id="mother" class="w-full border p-2 text-sm rounded mb-2">
+                    <input type="text" id="phone" class="w-full border p-2 text-sm rounded mb-2">
+                    <input type="email" id="email" class="w-full border p-2 text-sm rounded mb-2">
+                    <textarea id="address" class="w-full border p-2 text-sm rounded h-16"></textarea>
                 </div>
 
-                <!-- Manual Section Control (Toggle On/Off) -->
+                <!-- Section Toggles -->
                 <div class="border p-3 rounded space-y-2">
-                    <h3 class="font-bold text-sm text-indigo-700 mb-2">ঐচ্ছিক সেকশন ফিল্টার (ম্যানুয়াল)</h3>
-                    <label class="flex items-center text-xs space-x-2">
+                    <h3 class="font-bold text-sm text-indigo-700 mb-2" id="lbl-manual-filter">ঐচ্ছিক সেকশন ফিল্টার (ম্যানুয়াল)</h3>
+                    <label class="flex items-center text-xs space-x-2 cursor-pointer">
                         <input type="checkbox" id="sec-edu" checked onchange="updatePreview()">
-                        <span>শিক্ষাগত যোগ্যতা (Education)</span>
+                        <span id="lbl-chk-edu">শিক্ষাগত যোগ্যতা (Education)</span>
                     </label>
-                    <label class="flex items-center text-xs space-x-2">
+                    <label class="flex items-center text-xs space-x-2 cursor-pointer">
                         <input type="checkbox" id="sec-exp" checked onchange="updatePreview()">
-                        <span>অভিজ্ঞতা (Experience)</span>
+                        <span id="lbl-chk-exp">অভিজ্ঞতা (Experience)</span>
                     </label>
-                    <label class="flex items-center text-xs space-x-2">
+                    <label class="flex items-center text-xs space-x-2 cursor-pointer">
                         <input type="checkbox" id="sec-skill" checked onchange="updatePreview()">
-                        <span>দক্ষতা (Skills)</span>
+                        <span id="lbl-chk-skill">দক্ষতা (Skills)</span>
                     </label>
                 </div>
             </div>
 
-            <!-- Download Buttons Trigger Countdown -->
+            <!-- Download Triggers -->
             <div class="flex gap-2 pt-2">
                 <button onclick="triggerDownload('pdf')" class="w-1/2 bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded text-sm transition">
-                    <i class="fa-solid fa-file-pdf mr-1"></i> A4 PDF ডাউনলোড
+                    <i class="fa-solid fa-file-pdf mr-1"></i> <span id="btn-pdf">A4 PDF ডাউনলোড</span>
                 </button>
                 <button onclick="triggerDownload('img')" class="w-1/2 bg-green-600 hover:bg-green-700 text-white font-bold py-2 rounded text-sm transition">
-                    <i class="fa-solid fa-file-image mr-1"></i> High Image ডাউনলোড
+                    <i class="fa-solid fa-file-image mr-1"></i> <span id="btn-img">High Image ডাউনলোড</span>
                 </button>
             </div>
         </div>
 
-        <!-- Preview Live Section (Right Column) -->
+        <!-- Document Preview (Right) -->
         <div class="lg:col-span-7 flex justify-center overflow-x-auto">
-            <div id="cv-preview" class="a4-paper p-8 flex flex-col justify-between text-gray-800 transition-all">
-                <!-- Live CV Content dynamically rendered here -->
-            </div>
+            <div id="cv-preview" class="a4-paper p-8 flex flex-col justify-between text-gray-800 transition-all"></div>
         </div>
     </div>
 
-    <!-- Countdown Modal for Download -->
+    <!-- Countdown Modal -->
     <div id="countdownModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center z-50">
         <div class="bg-white p-6 rounded-lg text-center shadow-xl max-w-sm w-full mx-4">
             <i class="fa-solid fa-spinner fa-spin text-4xl text-indigo-600 mb-3"></i>
-            <h3 class="text-lg font-bold">আপনার ফাইল তৈরি হচ্ছে...</h3>
-            <p class="text-sm text-gray-500 my-2">অনুগ্রহ করে কয়েক সেকেন্ড অপেক্ষা করুন</p>
+            <h3 class="text-lg font-bold" id="modal-title">আপনার ফাইল তৈরি হচ্ছে...</h3>
+            <p class="text-sm text-gray-500 my-2" id="modal-sub">অনুগ্রহ করে কয়েক সেকেন্ড অপেক্ষা করুন</p>
             <div class="text-3xl font-extrabold text-indigo-600 my-2" id="timer">5</div>
         </div>
     </div>
@@ -173,37 +167,188 @@
     <!-- Drawer Sidebar -->
     <div id="sidebar" class="fixed top-0 right-0 w-64 h-full bg-white shadow-xl z-50 transform translate-x-full transition-transform duration-300 no-print">
         <div class="p-4 border-b flex justify-between items-center bg-indigo-900 text-white">
-            <h2 class="font-bold">মেনু ও অন্যান্য</h2>
+            <h2 class="font-bold" id="sidebar-title">মেনু ও অন্যান্য</h2>
             <button onclick="toggleSidebar()" class="text-lg"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="p-4 space-y-4 text-sm text-gray-700">
-            <a href="#" class="block p-2 hover:bg-gray-100 rounded"><i class="fa-solid fa-home mr-2"></i> হোম</a>
-            <a href="#" class="block p-2 hover:bg-gray-100 rounded"><i class="fa-solid fa-circle-info mr-2"></i> আমাদের সম্পর্কে</a>
-            <a href="#" class="block p-2 hover:bg-gray-100 rounded"><i class="fa-solid fa-headset mr-2"></i> সাপোর্ট</a>
-            <a href="#" class="block p-2 hover:bg-gray-100 rounded"><i class="fa-solid fa-gear mr-2"></i> সেটিংস</a>
+            <a href="#" class="block p-2 hover:bg-gray-100 rounded"><i class="fa-solid fa-home mr-2"></i> <span id="menu-home">হোম</span></a>
+            <a href="#" class="block p-2 hover:bg-gray-100 rounded"><i class="fa-solid fa-circle-info mr-2"></i> <span id="menu-about">আমাদের সম্পর্কে</span></a>
+            <a href="#" class="block p-2 hover:bg-gray-100 rounded"><i class="fa-solid fa-headset mr-2"></i> <span id="menu-support">সাপোর্ট</span></a>
         </div>
     </div>
 
     <!-- Bottom Ads Banner -->
-    <div class="bg-gray-200 border-t py-2 text-center text-xs text-gray-600 no-print mt-auto">
-        <p>⚡ [বিজ্ঞাপন ফুটার]: আপনার যেকোনো শপ বা বিজনেসের জন্য ওয়েবসাইট বানাতে আমাদের সাথে যোগাযোগ করুন।</p>
+    <div class="bg-gray-200 border-t py-2 text-center text-xs text-gray-600 no-print mt-auto" id="bottom-ad">
+        ⚡ [বিজ্ঞাপন ফুটার]: আপনার যেকোনো শপ বা বিজনেসের জন্য ওয়েবসাইট বানাতে আমাদের সাথে যোগাযোগ করুন।
     </div>
 
-    <!-- JavaScript Application Logic -->
     <script>
+        let currentLang = 'bn';
         let currentCategory = 'biodata';
         let currentStyle = 1;
         let photoData = '';
         let sigData = '';
 
-        // Template selector Generator
+        // Complete Dictionary for Bengali & English Dual-Language Support
+        const i18n = {
+            bn: {
+                siteTitle: "রাব্বি কম্পিউটার পয়েন্ট",
+                topAd: "📢 [বিজ্ঞাপন ব্যানার]: রাব্বি কম্পিউটার পয়েন্টে স্বল্পমূল্যে সিভি প্রসেসিং ও সকল প্রিন্টিং সেবা পাওয়া যায়!",
+                bottomAd: "⚡ [বিজ্ঞাপন ফুটার]: আপনার যেকোনো শপ বা বিজনেসের জন্য ওয়েবসাইট বানাতে আমাদের সাথে যোগাযোগ করুন।",
+                catBiodata: "বায়োডাটা",
+                catResume: "রিজিউমি",
+                catCv: "কারিকুলাম ভিটা (CV)",
+                formTitle: "তথ্য যোগ ও এডিট করুন",
+                selectTemplate: "ডিজাইন টেমপ্লেট নির্বাচন করুন:",
+                designBtn: "ডিজাইন",
+                photoLbl: "ছবি আপলোড",
+                sigLbl: "স্বাক্ষর আপলোড",
+                personalInfoLbl: "ব্যক্তিগত তথ্য",
+                manualFilterLbl: "ঐচ্ছিক সেকশন ফিল্টার (ম্যানুয়াল)",
+                chkEdu: "শিক্ষাগত যোগ্যতা (Education)",
+                chkExp: "অভিজ্ঞতা (Experience)",
+                chkSkill: "দক্ষতা (Skills)",
+                btnPdf: "A4 PDF ডাউনলোড",
+                btnImg: "High Image ডাউনলোড",
+                modalTitle: "আপনার ফাইল তৈরি হচ্ছে...",
+                modalSub: "অনুগ্রহ করে কয়েক সেকেন্ড অপেক্ষা করুন",
+                sidebarTitle: "মেনু ও অন্যান্য",
+                menuHome: "হোম",
+                menuAbout: "আমাদের সম্পর্কে",
+                menuSupport: "সাপোর্ট",
+                // Form Placeholders & Initial Values
+                phName: "পূর্ণ নাম",
+                phFather: "পিতার নাম",
+                phMother: "মাতার নাম",
+                phPhone: "মোবাইল নম্বর",
+                phEmail: "ইমেইল",
+                phAddress: "বর্তমান ও স্থায়ী ঠিকানা",
+                // Preview Output
+                valName: "মোঃ আব্দুর রহিম",
+                valFather: "মোঃ রফিকুল ইসলাম",
+                valMother: "মোসাম্মাৎ রহিমা বেগম",
+                valPhone: "01700000000",
+                valEmail: "example@gmail.com",
+                valAddress: "ঢাকা, বাংলাদেশ",
+                lblFather: "পিতার নাম",
+                lblMother: "মাতার নাম",
+                secPersonalDetails: "ব্যক্তিগত বিস্তারিত",
+                secEdu: "শিক্ষাগত যোগ্যতা",
+                secExp: "কর্মঅভিজ্ঞতা",
+                secSkill: "বিশেষ দক্ষতা",
+                tblExam: "পরীক্ষা",
+                tblYear: "পাসের সন",
+                tblBoard: "বোর্ড/বিশ্ববিদ্যালয়",
+                expRole: "কম্পিউটার অপারেটর - রাব্বি কম্পিউটার পয়েন্ট (২০২০ - বর্তমান)",
+                skillsList: "MS Word, Excel, Graphic Design, Web Development",
+                lblDate: "তারিখ",
+                lblSignature: "আবেদনকারীর স্বাক্ষর"
+            },
+            en: {
+                siteTitle: "Rabbi Computer Point",
+                topAd: "📢 [Ads Banner]: Fast & affordable CV processing & printing services at Rabbi Computer Point!",
+                bottomAd: "⚡ [Footer Ad]: Contact us to build a custom website for your shop or business.",
+                catBiodata: "Biodata",
+                catResume: "Resume",
+                catCv: "Curriculum Vitae (CV)",
+                formTitle: "Add & Edit Details",
+                selectTemplate: "Select Design Template:",
+                designBtn: "Design",
+                photoLbl: "Upload Photo",
+                sigLbl: "Upload Signature",
+                personalInfoLbl: "Personal Information",
+                manualFilterLbl: "Optional Sections (Manual)",
+                chkEdu: "Education Section",
+                chkExp: "Experience Section",
+                chkSkill: "Skills Section",
+                btnPdf: "Download A4 PDF",
+                btnImg: "Download High Image",
+                modalTitle: "Generating your file...",
+                modalSub: "Please wait a few seconds",
+                sidebarTitle: "Menu & Others",
+                menuHome: "Home",
+                menuAbout: "About Us",
+                menuSupport: "Support",
+                // Form Placeholders
+                phName: "Full Name",
+                phFather: "Father's Name",
+                phMother: "Mother's Name",
+                phPhone: "Phone Number",
+                phEmail: "Email Address",
+                phAddress: "Present & Permanent Address",
+                // Preview Output
+                valName: "MD. ABDUR RAHIM",
+                valFather: "MD. RAFIQUL ISLAM",
+                valMother: "MST. RAHIMA BEGUM",
+                valPhone: "+880 1700000000",
+                valEmail: "example@gmail.com",
+                valAddress: "Dhaka, Bangladesh",
+                lblFather: "Father's Name",
+                lblMother: "Mother's Name",
+                secPersonalDetails: "Personal Details",
+                secEdu: "Educational Qualification",
+                secExp: "Work Experience",
+                secSkill: "Key Skills",
+                tblExam: "Exam",
+                tblYear: "Passing Year",
+                tblBoard: "Board/Varsity",
+                expRole: "Computer Operator - Rabbi Computer Point (2020 - Present)",
+                skillsList: "MS Word, Excel, Graphic Design, Web Development",
+                lblDate: "Date",
+                lblSignature: "Applicant's Signature"
+            }
+        };
+
+        // Switch Language Function
+        function changeLanguage(lang) {
+            currentLang = lang;
+            const t = i18n[lang];
+
+            // UI Elements Text Update
+            document.getElementById('site-title').innerText = t.siteTitle;
+            document.getElementById('top-ad').innerText = t.topAd;
+            document.getElementById('bottom-ad').innerText = t.bottomAd;
+            document.getElementById('tab-biodata').innerText = t.catBiodata;
+            document.getElementById('tab-resume').innerText = t.catResume;
+            document.getElementById('tab-cv').innerText = t.catCv;
+            document.getElementById('lbl-form-title').innerText = t.formTitle;
+            document.getElementById('lbl-select-template').innerText = t.selectTemplate;
+            document.getElementById('lbl-photo').innerText = t.photoLbl;
+            document.getElementById('lbl-sig').innerText = t.sigLbl;
+            document.getElementById('lbl-personal-info').innerText = t.personalInfoLbl;
+            document.getElementById('lbl-manual-filter').innerText = t.manualFilterLbl;
+            document.getElementById('lbl-chk-edu').innerText = t.chkEdu;
+            document.getElementById('lbl-chk-exp').innerText = t.chkExp;
+            document.getElementById('lbl-chk-skill').innerText = t.chkSkill;
+            document.getElementById('btn-pdf').innerText = t.btnPdf;
+            document.getElementById('btn-img').innerText = t.btnImg;
+            document.getElementById('modal-title').innerText = t.modalTitle;
+            document.getElementById('modal-sub').innerText = t.modalSub;
+            document.getElementById('sidebar-title').innerText = t.sidebarTitle;
+            document.getElementById('menu-home').innerText = t.menuHome;
+            document.getElementById('menu-about').innerText = t.menuAbout;
+            document.getElementById('menu-support').innerText = t.menuSupport;
+
+            // Update Placeholders
+            document.getElementById('name').placeholder = t.phName;
+            document.getElementById('father').placeholder = t.phFather;
+            document.getElementById('mother').placeholder = t.phMother;
+            document.getElementById('phone').placeholder = t.phPhone;
+            document.getElementById('email').placeholder = t.phEmail;
+            document.getElementById('address').placeholder = t.phAddress;
+
+            loadDesignPickers();
+            updatePreview();
+        }
+
         function loadDesignPickers() {
             const container = document.getElementById('design-picker');
             container.innerHTML = '';
+            const t = i18n[currentLang];
             for (let i = 1; i <= 6; i++) {
                 container.innerHTML += `
                     <button onclick="selectStyle(${i})" class="border-2 rounded p-2 text-center hover:border-indigo-600 text-xs ${currentStyle === i ? 'border-indigo-600 bg-indigo-50 font-bold' : 'border-gray-200'}">
-                        ডিজাইন ${i}
+                        ${t.designBtn} ${i}
                     </button>`;
             }
         }
@@ -223,7 +368,7 @@
             updatePreview();
         }
 
-        // Handle Image Uploads
+        // File Inputs
         document.getElementById('photoInput').addEventListener('change', function(e) {
             const reader = new FileReader();
             reader.onload = function() { photoData = reader.result; updatePreview(); };
@@ -236,19 +381,20 @@
             if (e.target.files[0]) reader.readAsDataURL(e.target.files[0]);
         });
 
-        // Realtime Input Listeners
         ['name', 'father', 'mother', 'phone', 'email', 'address'].forEach(id => {
             document.getElementById(id).addEventListener('input', updatePreview);
         });
 
-        // Render Dynamic CV/Resume/Biodata
+        // Dynamic Document Renderer
         function updatePreview() {
-            const name = document.getElementById('name').value || 'মোঃ আব্দুর রহিম';
-            const father = document.getElementById('father').value || 'মোঃ রফিকুল ইসলাম';
-            const mother = document.getElementById('mother').value || 'মোসাম্মাৎ রহিমা বেগম';
-            const phone = document.getElementById('phone').value || '01700000000';
-            const email = document.getElementById('email').value || 'example@gmail.com';
-            const address = document.getElementById('address').value || 'ঢাকা, বাংলাদেশ';
+            const t = i18n[currentLang];
+
+            const name = document.getElementById('name').value || t.valName;
+            const father = document.getElementById('father').value || t.valFather;
+            const mother = document.getElementById('mother').value || t.valMother;
+            const phone = document.getElementById('phone').value || t.valPhone;
+            const email = document.getElementById('email').value || t.valEmail;
+            const address = document.getElementById('address').value || t.valAddress;
 
             const showEdu = document.getElementById('sec-edu').checked;
             const showExp = document.getElementById('sec-exp').checked;
@@ -256,88 +402,89 @@
 
             const preview = document.getElementById('cv-preview');
 
-            // Style variations classes applied dynamically
+            let categoryTitle = t.catCv;
+            if(currentCategory === 'biodata') categoryTitle = t.catBiodata;
+            if(currentCategory === 'resume') categoryTitle = t.catResume;
+
             let headerStyle = "border-b-2 border-indigo-600 pb-4 mb-4 flex justify-between items-center";
             if (currentStyle === 2) headerStyle = "bg-indigo-900 text-white p-4 rounded-t-lg mb-4 flex justify-between items-center";
             if (currentStyle === 3) headerStyle = "border-l-4 border-indigo-600 pl-4 mb-4 flex justify-between items-center";
 
             preview.innerHTML = `
                 <div>
-                    <!-- Header Segment -->
+                    <!-- Document Header -->
                     <div class="${headerStyle}">
                         <div>
                             <h2 class="text-2xl font-bold uppercase">${name}</h2>
-                            <p class="text-sm">${currentCategory.toUpperCase()}</p>
+                            <p class="text-sm font-semibold">${categoryTitle.toUpperCase()}</p>
                             <p class="text-xs mt-1">📞 ${phone} | ✉️ ${email}</p>
                             <p class="text-xs">🏠 ${address}</p>
                         </div>
-                        ${photoData ? `<img src="${photoData}" class="w-24 h-24 rounded border object-cover">` : '<div class="w-24 h-24 bg-gray-200 border flex items-center justify-center text-xs text-gray-400">ছবি</div>'}
+                        ${photoData ? `<img src="${photoData}" class="w-24 h-24 rounded border object-cover">` : `<div class="w-24 h-24 bg-gray-100 border flex items-center justify-center text-xs text-gray-400">${t.photoLbl}</div>`}
                     </div>
 
-                    <!-- Personal Info Section -->
+                    <!-- Personal Details -->
                     <div class="mb-4">
-                        <h3 class="font-bold text-md border-b text-indigo-800 mb-2">ব্যক্তিগত বিস্তারিত</h3>
+                        <h3 class="font-bold text-md border-b text-indigo-800 mb-2">${t.secPersonalDetails}</h3>
                         <div class="grid grid-cols-2 text-sm gap-1">
-                            <p><strong>পিতার নাম:</strong> ${father}</p>
-                            <p><strong>মাতার নাম:</strong> ${mother}</p>
+                            <p><strong>${t.lblFather}:</strong> ${father}</p>
+                            <p><strong>${t.lblMother}:</strong> ${mother}</p>
                         </div>
                     </div>
 
-                    <!-- Optional Section: Education -->
+                    <!-- Education Section -->
                     ${showEdu ? `
                     <div class="mb-4">
-                        <h3 class="font-bold text-md border-b text-indigo-800 mb-2">শিক্ষাগত যোগ্যতা</h3>
+                        <h3 class="font-bold text-md border-b text-indigo-800 mb-2">${t.secEdu}</h3>
                         <table class="w-full text-xs text-left border-collapse border">
                             <thead>
                                 <tr class="bg-gray-100">
-                                    <th class="border p-1">পরীক্ষা</th>
-                                    <th class="border p-1">পাসের সন</th>
-                                    <th class="border p-1">বোর্ড/বিশ্ববিদ্যালয়</th>
+                                    <th class="border p-1">${t.tblExam}</th>
+                                    <th class="border p-1">${t.tblYear}</th>
+                                    <th class="border p-1">${t.tblBoard}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class="border p-1">এস.এস.সি (SSC)</td>
-                                    <td class="border p-1">২০১৮</td>
-                                    <td class="border p-1">ঢাকা Board</td>
+                                    <td class="border p-1">SSC / Equivalent</td>
+                                    <td class="border p-1">2018</td>
+                                    <td class="border p-1">Dhaka Board</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>` : ''}
 
-                    <!-- Optional Section: Experience -->
+                    <!-- Experience Section -->
                     ${showExp ? `
                     <div class="mb-4">
-                        <h3 class="font-bold text-md border-b text-indigo-800 mb-2">কর্মঅভিজ্ঞতা</h3>
-                        <p class="text-sm"><strong>কম্পিউটার অপারেটর</strong> - রাব্বি কম্পিউটার পয়েন্ট (২০২০ - বর্তমান)</p>
+                        <h3 class="font-bold text-md border-b text-indigo-800 mb-2">${t.secExp}</h3>
+                        <p class="text-sm">${t.expRole}</p>
                     </div>` : ''}
 
-                    <!-- Optional Section: Skills -->
+                    <!-- Skills Section -->
                     ${showSkill ? `
                     <div class="mb-4">
-                        <h3 class="font-bold text-md border-b text-indigo-800 mb-2">বিশেষ দক্ষতা</h3>
-                        <p class="text-sm">MS Word, Excel, Graphic Design, Web Development</p>
+                        <h3 class="font-bold text-md border-b text-indigo-800 mb-2">${t.secSkill}</h3>
+                        <p class="text-sm">${t.skillsList}</p>
                     </div>` : ''}
                 </div>
 
-                <!-- Footer / Signature -->
+                <!-- Footer/Signature -->
                 <div class="flex justify-between items-end pt-8 border-t">
-                    <p class="text-xs text-gray-400">তারিখ: ${new Date().toLocaleDateString('bn-BD')}</p>
+                    <p class="text-xs text-gray-400">${t.lblDate}: ${new Date().toLocaleDateString(currentLang === 'bn' ? 'bn-BD' : 'en-US')}</p>
                     <div class="text-center">
                         ${sigData ? `<img src="${sigData}" class="h-10 mx-auto">` : '<div class="h-8"></div>'}
-                        <p class="text-xs border-t border-gray-400 pt-1 font-semibold">আবেদনকারীর স্বাক্ষর</p>
+                        <p class="text-xs border-t border-gray-400 pt-1 font-semibold">${t.lblSignature}</p>
                     </div>
                 </div>
             `;
         }
 
-        // Sidebar Navigation Toggle
         function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('translate-x-full');
+            document.getElementById('sidebar').classList.toggle('translate-x-full');
         }
 
-        // Countdown & Download Logic
+        // Countdown Timer & Download Logic
         function triggerDownload(type) {
             const modal = document.getElementById('countdownModal');
             const timerEl = document.getElementById('timer');
@@ -362,7 +509,7 @@
             const element = document.getElementById('cv-preview');
             const opt = {
                 margin:       0,
-                filename:     'My_CV.pdf',
+                filename:     `Document_${currentCategory}.pdf`,
                 image:        { type: 'jpeg', quality: 0.98 },
                 html2canvas:  { scale: 2 },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
@@ -374,15 +521,14 @@
             const element = document.getElementById('cv-preview');
             html2canvas(element, { scale: 3 }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = 'My_CV.png';
+                link.download = `Document_${currentCategory}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             });
         }
 
-        // Initial preview load
-        loadDesignPickers();
-        updatePreview();
+        // Initialization
+        changeLanguage('bn');
     </script>
 </body>
 </html>
