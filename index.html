@@ -3,8 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>নাগরিক সেবা | মীর রাব্বি হোসেন</title>
     
+    <!-- ==================== 100% SEO META TAGS ==================== -->
+    <title>নাগরিক সেবা পোর্টাল | মীর রাব্বি হোসেন</title>
+    <meta name="description" content="বাংলাদেশ সরকারের অনলাইন নাগরিক সেবাসমূহ যেমন জন্ম নিবন্ধন, এনআইডি, ই-পাসপোর্ট, চারিত্রিক সনদ, ওয়ারিশ সনদ ও ট্রেড লাইসেন্স আবেদন সংক্রান্ত সকল তথ্য।">
+    <meta name="keywords" content="নাগরিক সেবা, জন্ম নিবন্ধন, NID কার্ড, ই-পাসপোর্ট, চারিত্রিক সনদ, ট্রেড লাইসেন্স, মীর রাব্বি হোসেন, Bangladesh Citizen Services">
+    <meta name="author" content="মীর রাব্বি হোসেন">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://example.com/nagorik-seba"> <!-- আপনার ওয়েবসাইটের আসল লিংক দিন -->
+
+    <!-- Open Graph (OG) Tags for Social Media Sharing (Facebook, WhatsApp, LinkedIn) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://example.com/nagorik-seba">
+    <meta property="og:title" content="নাগরিক সেবা পোর্টাল | মীর রাব্বি হোসেন">
+    <meta property="og:description" content="সহজেই ঘরে বসে অনলাইনে সকল নাগরিক সেবা গ্রহণের নিয়ম ও বিস্তারিত তথ্য জানুন।">
+    <meta property="og:image" content="https://picsum.photos/1200/630?random=1"> <!-- সোশ্যাল মিডিয়া প্রিভিউ ইমেজ -->
+    <meta property="og:locale" content="bn_BD">
+    <meta property="og:site_name" content="নাগরিক সেবা">
+
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="নাগরিক সেবা পোর্টাল | মীর রাব্বি হোসেন">
+    <meta name="twitter:description" content="সহজেই ঘরে বসে অনলাইনে সকল নাগরিক সেবা গ্রহণের নিয়ম ও বিস্তারিত তথ্য জানুন।">
+    <meta name="twitter:image" content="https://picsum.photos/1200/630?random=1">
+    <!-- ============================================================ -->
+
     <!-- Google Fonts import for Hind Siliguri, Anek Bangla, and SolaimanLipi alternative -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -175,7 +198,7 @@
             background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
         }
 
-        .slide-content h3 {
+        .slide-content h2 {
             font-size: 1.3rem;
             margin-bottom: 5px;
         }
@@ -289,7 +312,7 @@
             object-fit: contain;
         }
 
-        .service-card h4 {
+        .service-card h3 {
             font-size: 0.95rem;
             font-weight: 600;
             color: var(--text-color);
@@ -521,7 +544,7 @@
                 height: 40px;
             }
 
-            .service-card h4 {
+            .service-card h3 {
                 font-size: 1.1rem;
             }
         }
@@ -532,7 +555,7 @@
     <!-- HEADER -->
     <header>
         <div class="header-container">
-            <a href="#" class="brand-logo">
+            <a href="#" class="brand-logo" aria-label="মীর রাব্বি হোসেন - নাগরিক সেবা">
                 <i class="fa-solid fa-building-columns"></i>
                 <span>মীর রাব্বি হোসেন</span>
             </a>
@@ -540,16 +563,16 @@
             <!-- Desktop Nav Links -->
             <nav class="desktop-nav">
                 <a href="#"><i class="fa-solid fa-house"></i> হোম</a>
-                <a href="#"><i class="fa-solid fa-cubes"></i> সেবাসমূহ</a>
+                <a href="#"><i class="fa-solid fa-border-all"></i> সেবাসমূহ</a>
                 <a href="#"><i class="fa-solid fa-circle-info"></i> আমাদের সম্পর্কে</a>
                 <a href="#"><i class="fa-solid fa-phone"></i> যোগাযোগ</a>
             </nav>
 
             <div class="header-actions">
-                <button class="theme-toggle-btn" id="themeToggle" title="ডার্ক/লাইট মোড">
+                <button class="theme-toggle-btn" id="themeToggle" aria-label="ডার্ক ও লাইট মোড পরিবর্তন করুন" title="ডার্ক/লাইট মোড">
                     <i class="fa-solid fa-moon"></i>
                 </button>
-                <button class="menu-toggle-btn" id="menuToggle">
+                <button class="menu-toggle-btn" id="menuToggle" aria-label="সাইডবার মেনু খুলুন">
                     <i class="fa-solid fa-bars"></i>
                 </button>
             </div>
@@ -561,11 +584,11 @@
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <h3>মেনু</h3>
-            <button class="menu-toggle-btn" id="menuClose"><i class="fa-solid fa-xmark"></i></button>
+            <button class="menu-toggle-btn" id="menuClose" aria-label="মেনু বন্ধ করুন"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <ul class="sidebar-menu">
             <li><a href="#"><i class="fa-solid fa-house"></i> হোম</a></li>
-            <li><a href="#"><i class="fa-solid fa-cubes"></i> নাগরিক সেবাসমূহ</a></li>
+            <li><a href="#"><i class="fa-solid fa-border-all"></i> নাগরিক সেবাসমূহ</a></li>
             <li><a href="#"><i class="fa-solid fa-file-arrow-down"></i> ফরম ডাউনলোড</a></li>
             <li><a href="#"><i class="fa-solid fa-circle-info"></i> নিয়মাবলি</a></li>
             <li><a href="#"><i class="fa-solid fa-headset"></i> হেল্পলাইন (১৬১২২)</a></li>
@@ -576,26 +599,26 @@
     <main class="main-container">
 
         <!-- HERO SLIDER -->
-        <section class="hero-slider">
+        <section class="hero-slider" aria-label="জরুরি সেবা স্লাইডার">
             <div class="slider-wrapper" id="sliderWrapper">
-                <a href="https://bdris.gov.bd/" target="_blank" class="slide">
-                    <img src="https://picsum.photos/800/400?random=1" alt="জন্ম নিবন্ধন">
+                <a href="https://bdris.gov.bd/" target="_blank" class="slide" rel="noopener">
+                    <img src="https://picsum.photos/800/400?random=1" alt="অনলাইন জন্ম ও মৃত্যু নিবন্ধন">
                     <div class="slide-content">
-                        <h3>অনলাইন জন্ম ও মৃত্যু নিবন্ধন</h3>
+                        <h2>অনলাইন জন্ম ও মৃত্যু নিবন্ধন</h2>
                         <p>সহজেই ঘরে বসে অনলাইনে আবেদন করুন</p>
                     </div>
                 </a>
-                <a href="https://services.nidw.gov.bd/" target="_blank" class="slide">
-                    <img src="https://picsum.photos/800/400?random=2" alt="NID">
+                <a href="https://services.nidw.gov.bd/" target="_blank" class="slide" rel="noopener">
+                    <img src="https://picsum.photos/800/400?random=2" alt="স্মার্ট এনআইডি সার্ভিস">
                     <div class="slide-content">
-                        <h3>স্মার্ট এনআইডি সার্ভিস</h3>
+                        <h2>স্মার্ট এনআইডি সার্ভিস</h2>
                         <p>কার্ড সংশোধন, ডাউনলোড ও নতুন আবেদন</p>
                     </div>
                 </a>
-                <a href="https://epassport.gov.bd/" target="_blank" class="slide">
-                    <img src="https://picsum.photos/800/400?random=3" alt="Passport">
+                <a href="https://epassport.gov.bd/" target="_blank" class="slide" rel="noopener">
+                    <img src="https://picsum.photos/800/400?random=3" alt="ই-পাসপোর্ট পোর্টাল">
                     <div class="slide-content">
-                        <h3>ই-পাসপোর্ট পোর্টাল</h3>
+                        <h2>ই-পাসপোর্ট পোর্টাল</h2>
                         <p>পাসপোর্টের স্থিতি পরীক্ষা ও আবেদন ফরম</p>
                     </div>
                 </a>
@@ -611,19 +634,19 @@
         <div class="search-container">
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
-                <input type="text" id="searchInput" placeholder="যেকোনো নাগরিক সেবা খুঁজুন..." onkeyup="filterServices()">
+                <input type="text" id="searchInput" placeholder="যেকোনো নাগরিক সেবা খুঁজুন..." onkeyup="filterServices()" aria-label="সেবা সার্চ করুন">
             </div>
         </div>
 
         <!-- SERVICES SECTION -->
-        <div class="section-title">
-            <i class="fa-solid fa-grid-2"></i>
+        <h1 class="section-title">
+            <i class="fa-solid fa-border-all"></i>
             <span>জরুরি নাগরিক সেবাসমূহ</span>
-        </div>
+        </h1>
 
-        <div class="services-grid" id="servicesGrid">
+        <section class="services-grid" id="servicesGrid">
             <!-- Items injected dynamically by JS -->
-        </div>
+        </section>
     </main>
 
     <!-- MOBILE BOTTOM NAVIGATION -->
@@ -632,8 +655,9 @@
             <i class="fa-solid fa-house"></i>
             <span>হোম</span>
         </a>
+        <!-- ফিক্সড সেবা আইকন (fa-border-all) -->
         <a href="#" class="nav-item">
-            <i class="fa-solid fa-grid-2"></i>
+            <i class="fa-solid fa-border-all"></i>
             <span>সেবা</span>
         </a>
         <a href="#" class="nav-item">
@@ -647,11 +671,11 @@
     </nav>
 
     <!-- MODAL POPUP -->
-    <div class="modal" id="serviceModal">
+    <div class="modal" id="serviceModal" aria-hidden="true">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 id="modalTitle">সেবার নাম</h3>
-                <button class="menu-toggle-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+                <button class="menu-toggle-btn" onclick="closeModal()" aria-label="পপআপ বন্ধ করুন"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body" id="modalBody">
                 <!-- Popup content -->
@@ -723,14 +747,14 @@
         function renderServices(data) {
             servicesGrid.innerHTML = "";
             data.forEach(item => {
-                const card = document.createElement('div');
+                const card = document.createElement('article');
                 card.className = 'service-card';
                 card.onclick = () => openModal(item);
                 card.innerHTML = `
                     <div class="service-img">
                         <i class="fa-solid ${item.icon} fa-xl" style="color: var(--primary-color)"></i>
                     </div>
-                    <h4>${item.title}</h4>
+                    <h3>${item.title}</h3>
                     <p>${item.shortDesc}</p>
                 `;
                 servicesGrid.appendChild(card);
@@ -803,10 +827,12 @@
                 <p><strong>সহায়তা হটলাইন:</strong> ১৬১২২</p>
             `;
             modal.classList.add('active');
+            modal.setAttribute('aria-hidden', 'false');
         }
 
         function closeModal() {
             modal.classList.remove('active');
+            modal.setAttribute('aria-hidden', 'true');
         }
 
         // SHARE & DOWNLOAD FUNCTIONALITY
