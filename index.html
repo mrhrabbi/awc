@@ -3,341 +3,834 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>প্রো ফটোকার্ড জেনারেটর</title>
-    <!-- Lucide Icons Library -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Html2Canvas for downloading image -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <title>নাগরিক সেবা | মীর রাব্বি হোসেন</title>
+    
+    <!-- Google Fonts import for Hind Siliguri, Anek Bangla, and SolaimanLipi alternative -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;600;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         :root {
+            --primary-color: #006a4e; /* BD Green */
+            --primary-hover: #00523d;
+            --accent-color: #f42a41; /* BD Red */
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --text-muted: #6c757d;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 15px rgba(0,0,0,0.05);
+            --font-family: 'Hind Siliguri', 'Anek Bangla', 'SolaimanLipi', sans-serif;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #10b981;
+            --primary-hover: #059669;
+            --accent-color: #ff4d4d;
             --bg-color: #0f172a;
-            --panel-bg: #1e293b;
-            --accent-color: #6366f1;
+            --card-bg: #1e293b;
             --text-color: #f8fafc;
+            --text-muted: #94a3b8;
             --border-color: #334155;
+            --shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-sizing: border-box;
+            font-family: var(--font-family);
+            transition: background-color 0.3s, color 0.3s;
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
+            line-height: 1.6;
+            padding-bottom: 70px; /* Mobile bottom nav space */
         }
 
-        /* Sidebar Styling */
-        .sidebar {
-            width: 380px;
-            background-color: var(--panel-bg);
-            border-right: 1px solid var(--border-color);
-            padding: 20px;
-            overflow-y: auto;
+        /* HEADER STYLES */
+        header {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 12px 20px;
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .brand-logo i {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .theme-toggle-btn, .menu-toggle-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle-btn:hover, .menu-toggle-btn:hover {
+            background-color: var(--border-color);
+        }
+
+        /* DESKTOP NAV */
+        .desktop-nav {
+            display: none;
             gap: 20px;
         }
 
-        .header {
+        .desktop-nav a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        .desktop-nav a:hover {
+            color: var(--primary-color);
+        }
+
+        /* MAIN LAYOUT */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 15px;
+        }
+
+        /* HERO SLIDER */
+        .hero-slider {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
+        }
+
+        .slider-wrapper {
+            display: flex;
+            width: 300%;
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slide {
+            width: 33.333%;
+            height: 100%;
+            position: relative;
+            text-decoration: none;
+            color: white;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .slide-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+        }
+
+        .slide-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+
+        .slide-content p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .slider-dots {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            display: flex;
+            gap: 6px;
+            z-index: 10;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .dot.active {
+            background: white;
+            width: 18px;
+            border-radius: 10px;
+        }
+
+        /* SEARCH BAR */
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        .search-box {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--accent-color);
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 10px 15px;
+            box-shadow: var(--shadow);
+        }
+
+        .search-box input {
+            border: none;
+            outline: none;
+            background: transparent;
+            width: 100%;
+            margin-left: 10px;
+            font-size: 1rem;
+            color: var(--text-color);
         }
 
         .section-title {
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #94a3b8;
-            margin-bottom: 10px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .control-group {
+        .section-title i {
+            color: var(--primary-color);
+        }
+
+        /* SERVICES GRID (2 COLUMNS DEFAULT) */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .service-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        label {
-            font-size: 0.85rem;
-            color: #cbd5e1;
+        .service-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
         }
 
-        input[type="text"], textarea, select {
-            background: #0f172a;
-            border: 1px solid var(--border-color);
-            color: #fff;
-            padding: 10px;
-            border-radius: 6px;
-            outline: none;
+        .service-img {
+            width: 55px;
+            height: 55px;
+            border-radius: 12px;
+            background-color: rgba(0, 106, 78, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
         }
 
-        input[type="text"]:focus, textarea:focus, select:focus {
-            border-color: var(--accent-color);
+        .service-img img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
         }
 
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+        .service-card h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 4px;
+        }
+
+        .service-card p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* MOBILE BOTTOM NAVIGATION */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            gap: 3px;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .nav-item i {
+            font-size: 1.2rem;
+        }
+
+        /* SIDEBAR / MOBILE MENU */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 280px;
+            height: 100%;
+            background-color: var(--card-bg);
+            z-index: 2000;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            transition: right 0.3s ease;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar.open {
+            right: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 15px;
+        }
+
+        .sidebar-menu a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1500;
+            display: none;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        /* MODAL / POPUP */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 2500;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 85vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            animation: popUp 0.3s ease;
+        }
+
+        @keyframes popUp {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            font-size: 0.95rem;
+        }
+
+        .modal-body img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .modal-footer {
+            padding: 12px 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
             gap: 10px;
         }
 
-        /* Preview Area */
-        .preview-area {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            background: #020617;
-            position: relative;
-        }
-
-        /* Canvas / Card Box */
-        .card-container {
-            width: 400px;
-            height: 500px;
-            background: linear-gradient(135deg, #6366f1, #a855f7);
-            border-radius: 16px;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            position: relative;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-            transition: all 0.3s ease;
-        }
-
-        .card-profile-img {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid #ffffff;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-        }
-
-        .card-name-box {
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
             display: flex;
             align-items: center;
             gap: 6px;
+            font-size: 0.9rem;
         }
 
-        .card-name {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #ffffff;
-        }
-
-        .verified-badge {
-            color: #38bdf8;
-            display: inline-block;
-        }
-
-        .card-title {
-            font-size: 0.95rem;
-            color: #e2e8f0;
-            margin-bottom: 15px;
-        }
-
-        .card-bio {
-            font-size: 0.85rem;
-            color: #cbd5e1;
-            line-height: 1.4;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 12px;
-            border-radius: 8px;
-            backdrop-filter: blur(5px);
-            width: 100%;
-        }
-
-        .watermark {
-            position: absolute;
-            bottom: 10px;
-            font-size: 0.7rem;
-            color: rgba(255, 255, 255, 0.5);
-            letter-spacing: 1px;
-        }
-
-        /* Buttons */
-        .btn-download {
-            margin-top: 20px;
-            background-color: var(--accent-color);
+        .btn-primary {
+            background-color: var(--primary-color);
             color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
-            transition: transform 0.2s;
         }
 
-        .btn-download:hover {
-            transform: translateY(-2px);
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
         }
 
-        /* CSS Filters */
-        .filter-normal { filter: none; }
-        .filter-vintage { filter: sepia(0.5) contrast(1.2); }
-        .filter-bw { filter: grayscale(1); }
-        .filter-vibrant { filter: saturate(2); }
+        /* RESPONSIVE DESIGN (DESKTOP MODE) */
+        @media (min-width: 768px) {
+            body {
+                padding-bottom: 0;
+            }
+
+            .bottom-nav {
+                display: none;
+            }
+
+            .desktop-nav {
+                display: flex;
+            }
+
+            .hero-slider {
+                height: 320px;
+            }
+
+            .services-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 20px;
+            }
+
+            .service-card {
+                padding: 20px;
+            }
+
+            .service-img {
+                width: 70px;
+                height: 70px;
+            }
+
+            .service-img img {
+                width: 40px;
+                height: 40px;
+            }
+
+            .service-card h4 {
+                font-size: 1.1rem;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <!-- Sidebar Controls -->
-    <div class="sidebar">
-        <div class="header">
-            <i data-lucide="sparkles"></i>
-            <span>ফটোকার্ড জেনারেটর</span>
-        </div>
+    <!-- HEADER -->
+    <header>
+        <div class="header-container">
+            <a href="#" class="brand-logo">
+                <i class="fa-solid fa-building-columns"></i>
+                <span>মীর রাব্বি হোসেন</span>
+            </a>
 
-        <!-- Layout Controls -->
-        <div class="control-group">
-            <div class="section-title">
-                <i data-lucide="layout"></i> থিম ও ক্যানভাস
-            </div>
-            <label>ব্যাকগ্রাউন্ড গ্রাডিয়েন্ট</label>
-            <select id="bgSelect" onchange="updateCardStyle()">
-                <option value="linear-gradient(135deg, #6366f1, #a855f7)">পার্পল ও বেগুনি</option>
-                <option value="linear-gradient(135deg, #3b82f6, #10b981)">নীল ও সবুজ</option>
-                <option value="linear-gradient(135deg, #f43f5e, #fb923c)">লাল ও কমলা</option>
-                <option value="linear-gradient(135deg, #0f172a, #1e293b)">ডার্ক ক্লাসিক</option>
-            </select>
-        </div>
+            <!-- Desktop Nav Links -->
+            <nav class="desktop-nav">
+                <a href="#"><i class="fa-solid fa-house"></i> হোম</a>
+                <a href="#"><i class="fa-solid fa-cubes"></i> সেবাসমূহ</a>
+                <a href="#"><i class="fa-solid fa-circle-info"></i> আমাদের সম্পর্কে</a>
+                <a href="#"><i class="fa-solid fa-phone"></i> যোগাযোগ</a>
+            </nav>
 
-        <!-- Profile Details -->
-        <div class="control-group">
-            <div class="section-title">
-                <i data-lucide="user"></i> প্রোফাইল তথ্য
-            </div>
-            <label>ছবি আপলোড করুন</label>
-            <input type="file" id="imageInput" accept="image/*" onchange="loadUserImage(event)">
-
-            <label>নাম</label>
-            <input type="text" id="nameInput" value="জন ডো" oninput="updateText()">
-
-            <label>পদবি/টাইটেল</label>
-            <input type="text" id="titleInput" value="সফটওয়্যার ইঞ্জিনিয়ার" oninput="updateText()">
-
-            <label>বায়ো / ক্যাপশন</label>
-            <textarea id="bioInput" rows="3" oninput="updateText()">ডিজিটাল প্রোডাক্ট তৈরি করা এবং কোডিং সম্পর্কিত যেকোনো বিষয় আমার পছন্দ।</textarea>
-        </div>
-
-        <!-- Photo Filters -->
-        <div class="control-group">
-            <div class="section-title">
-                <i data-lucide="image"></i> ফটো ফিল্টার
-            </div>
-            <div class="grid-2">
-                <button onclick="setFilter('filter-normal')">Normal</button>
-                <button onclick="setFilter('filter-vintage')">Vintage</button>
-                <button onclick="setFilter('filter-bw')">B&W</button>
-                <button onclick="setFilter('filter-vibrant')">Vibrant</button>
+            <div class="header-actions">
+                <button class="theme-toggle-btn" id="themeToggle" title="ডার্ক/লাইট মোড">
+                    <i class="fa-solid fa-moon"></i>
+                </button>
+                <button class="menu-toggle-btn" id="menuToggle">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
             </div>
         </div>
+    </header>
 
-        <!-- Extras -->
-        <div class="control-group">
-            <div class="section-title">
-                <i data-lucide="shield-check"></i> অন্যান্য ফিচার
+    <!-- SIDEBAR / OVERLAY -->
+    <div class="overlay" id="overlay"></div>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>মেনু</h3>
+            <button class="menu-toggle-btn" id="menuClose"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#"><i class="fa-solid fa-house"></i> হোম</a></li>
+            <li><a href="#"><i class="fa-solid fa-cubes"></i> নাগরিক সেবাসমূহ</a></li>
+            <li><a href="#"><i class="fa-solid fa-file-arrow-down"></i> ফরম ডাউনলোড</a></li>
+            <li><a href="#"><i class="fa-solid fa-circle-info"></i> নিয়মাবলি</a></li>
+            <li><a href="#"><i class="fa-solid fa-headset"></i> হেল্পলাইন (১৬১২২)</a></li>
+        </ul>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-container">
+
+        <!-- HERO SLIDER -->
+        <section class="hero-slider">
+            <div class="slider-wrapper" id="sliderWrapper">
+                <a href="https://bdris.gov.bd/" target="_blank" class="slide">
+                    <img src="https://picsum.photos/800/400?random=1" alt="জন্ম নিবন্ধন">
+                    <div class="slide-content">
+                        <h3>অনলাইন জন্ম ও মৃত্যু নিবন্ধন</h3>
+                        <p>সহজেই ঘরে বসে অনলাইনে আবেদন করুন</p>
+                    </div>
+                </a>
+                <a href="https://services.nidw.gov.bd/" target="_blank" class="slide">
+                    <img src="https://picsum.photos/800/400?random=2" alt="NID">
+                    <div class="slide-content">
+                        <h3>স্মার্ট এনআইডি সার্ভিস</h3>
+                        <p>কার্ড সংশোধন, ডাউনলোড ও নতুন আবেদন</p>
+                    </div>
+                </a>
+                <a href="https://epassport.gov.bd/" target="_blank" class="slide">
+                    <img src="https://picsum.photos/800/400?random=3" alt="Passport">
+                    <div class="slide-content">
+                        <h3>ই-পাসপোর্ট পোর্টাল</h3>
+                        <p>পাসপোর্টের স্থিতি পরীক্ষা ও আবেদন ফরম</p>
+                    </div>
+                </a>
             </div>
-            <label style="display: flex; align-items: center; gap: 8px;">
-                <input type="checkbox" id="badgeToggle" checked onchange="toggleVerifiedBadge()">
-                ভেরিফাইড ব্যাজ দেখাও
-            </label>
-            <label>ওয়াটারমার্ক</label>
-            <input type="text" id="watermarkInput" value="CREATED WITH PHOTOCARD" oninput="updateText()">
+            <div class="slider-dots">
+                <div class="dot active" onclick="goToSlide(0)"></div>
+                <div class="dot" onclick="goToSlide(1)"></div>
+                <div class="dot" onclick="goToSlide(2)"></div>
+            </div>
+        </section>
+
+        <!-- SEARCH -->
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass" style="color: var(--text-muted);"></i>
+                <input type="text" id="searchInput" placeholder="যেকোনো নাগরিক সেবা খুঁজুন..." onkeyup="filterServices()">
+            </div>
+        </div>
+
+        <!-- SERVICES SECTION -->
+        <div class="section-title">
+            <i class="fa-solid fa-grid-2"></i>
+            <span>জরুরি নাগরিক সেবাসমূহ</span>
+        </div>
+
+        <div class="services-grid" id="servicesGrid">
+            <!-- Items injected dynamically by JS -->
+        </div>
+    </main>
+
+    <!-- MOBILE BOTTOM NAVIGATION -->
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item active">
+            <i class="fa-solid fa-house"></i>
+            <span>হোম</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fa-solid fa-grid-2"></i>
+            <span>সেবা</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fa-solid fa-bell"></i>
+            <span>নোটিশ</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fa-solid fa-user"></i>
+            <span>প্রোফাইল</span>
+        </a>
+    </nav>
+
+    <!-- MODAL POPUP -->
+    <div class="modal" id="serviceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">সেবার নাম</h3>
+                <button class="menu-toggle-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Popup content -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="shareService()"><i class="fa-solid fa-share-nodes"></i> শেয়ার</button>
+                <button class="btn btn-primary" onclick="downloadServiceInfo()"><i class="fa-solid fa-download"></i> তথ্য ডাউনলোড</button>
+            </div>
         </div>
     </div>
 
-    <!-- Live Preview Area -->
-    <div class="preview-area">
-        <div id="photoCard" class="card-container">
-            <img id="cardProfileImg" class="card-profile-img filter-normal" src="https://via.placeholder.com/150" alt="Profile">
-            <div class="card-name-box">
-                <span id="cardName" class="card-name">জন ডো</span>
-                <i id="cardBadge" data-lucide="badge-check" class="verified-badge"></i>
-            </div>
-            <span id="cardTitle" class="card-title">সফটওয়্যার ইঞ্জিনিয়ার</span>
-            <p id="cardBio" class="card-bio">ডিজিটাল প্রোডাক্ট তৈরি করা এবং কোডিং সম্পর্কিত যেকোনো বিষয় আমার পছন্দ।</p>
-            <div id="cardWatermark" class="watermark">CREATED WITH PHOTOCARD</div>
-        </div>
-
-        <!-- Export Action Button -->
-        <button class="btn-download" onclick="downloadPhotoCard()">
-            <i data-lucide="download"></i> ডাউনলোড ফটোকার্ড (PNG)
-        </button>
-    </div>
-
+    <!-- JAVASCRIPT -->
     <script>
-        // Initialize Lucide Icons
-        lucide.createIcons();
+        // SERVICE DATA
+        const services = [
+            {
+                id: 1,
+                title: "জন্ম নিবন্ধন",
+                shortDesc: "নতুন আবেদন ও সংশোধন",
+                icon: "fa-id-card",
+                img: "https://picsum.photos/500/300?random=11",
+                details: "নতুন জন্ম নিবন্ধনের আবেদন করতে সনাতন নিয়ম ও প্রয়োজনীয় কাগজপত্র জমা দিতে হবে। অ্যাপ্লাই করার জন্য পিতা-মাতার এনআইডি ও হোল্ডিং ট্যাক্স রসিদ স্ক্যান করে আপলোড করুন। ওয়েবসাইট: bdris.gov.bd"
+            },
+            {
+                id: 2,
+                title: "এনআইডি সেবা",
+                shortDesc: "ভোটার আইডি কার্ড ডাউনলোড",
+                icon: "fa-address-card",
+                img: "https://picsum.photos/500/300?random=12",
+                details: "নতুন ভোটার নিবন্ধন, এনআইডি কার্ড রিইস্যু, সংশোধন এবং অনলাইন কপি ডাউনলোডের সুযোগ সুবিধা। প্রয়োজনীয় ফি রকেটের মাধ্যমে পরিশোধ করা যাবে।"
+            },
+            {
+                id: 3,
+                title: "ই-পাসপোর্ট",
+                shortDesc: "আবেদন ও স্ট্যাটাস চেক",
+                icon: "fa-passport",
+                img: "https://picsum.photos/500/300?random=13",
+                details: "অনলাইনে ই-পাসপোর্টের জন্য সরাসরি আবেদন জমা দিন। ফি প্রদান ও অ্যাপয়েন্টমেন্ট তারিখ নির্বাচন করুন। পরবর্তীতে পাসপোর্ট অফিসে বায়োমেট্রিক প্রদান করতে হবে।"
+            },
+            {
+                id: 4,
+                title: "চারিত্রিক সনদ",
+                shortDesc: "কাউন্সিলর/চেয়ারম্যান সনদ",
+                icon: "fa-certificate",
+                img: "https://picsum.photos/500/300?random=14",
+                details: "স্থানীয় চেয়ারম্যান অথবা ওয়ার্ড কাউন্সিলর অফিস থেকে চারিত্রিক সনদপত্র সংগ্রহের জন্য আবেদন পদ্ধতি। সাধারণত ১ কার্যদিবসের মধ্যে প্রদান করা হয়।"
+            },
+            {
+                id: 5,
+                title: "ওয়ারিশ সনদ",
+                shortDesc: "উত্তরাধিকার সনদের আবেদন",
+                icon: "fa-users",
+                img: "https://picsum.photos/500/300?random=15",
+                details: "মৃত ব্যক্তির সকল আইনগত ওয়ারিশদের তালিকা সম্বলিত ডিজিটাল সনদপত্রের আবেদন। আবেদনের সাথে জাতীয় পরিচয়পত্র ও মৃত্যু নিবন্ধন সংযুক্ত করতে হয়।"
+            },
+            {
+                id: 6,
+                title: "ট্রেড লাইসেন্স",
+                shortDesc: "ব্যবসার লাইসেন্স আবেদন",
+                icon: "fa-briefcase",
+                img: "https://picsum.photos/500/300?random=16",
+                details: "পৌরসভা বা সিটি কর্পোরেশনের আওতায় ব্যবসা পরিচালনা করার জন্য ই-ট্রেড লাইসেন্স সেবা নিন। অনলাইনে সহজেই ফি জমা দিন।"
+            }
+        ];
 
-        // Real-time Text Updates
-        function updateText() {
-            document.getElementById('cardName').innerText = document.getElementById('nameInput').value;
-            document.getElementById('cardTitle').innerText = document.getElementById('titleInput').value;
-            document.getElementById('cardBio').innerText = document.getElementById('bioInput').value;
-            document.getElementById('cardWatermark').innerText = document.getElementById('watermarkInput').value;
-        }
+        // RENDER SERVICES
+        const servicesGrid = document.getElementById('servicesGrid');
 
-        // Image Upload Functionality
-        function loadUserImage(event) {
-            const imgElement = document.getElementById('cardProfileImg');
-            imgElement.src = URL.createObjectURL(event.target.files[0]);
-        }
-
-        // Background Style Changer
-        function updateCardStyle() {
-            const selectedBg = document.getElementById('bgSelect').value;
-            document.getElementById('photoCard').style.background = selectedBg;
-        }
-
-        // Toggle Verified Badge
-        function toggleVerifiedBadge() {
-            const badge = document.getElementById('cardBadge');
-            const isChecked = document.getElementById('badgeToggle').checked;
-            badge.style.display = isChecked ? 'inline-block' : 'none';
-        }
-
-        // Filter Application
-        function setFilter(filterClass) {
-            const img = document.getElementById('cardProfileImg');
-            img.className = 'card-profile-img ' + filterClass;
-        }
-
-        // Download Card as PNG
-        function downloadPhotoCard() {
-            const card = document.getElementById('photoCard');
-            html2canvas(card, { scale: 2 }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = 'photocard.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
+        function renderServices(data) {
+            servicesGrid.innerHTML = "";
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'service-card';
+                card.onclick = () => openModal(item);
+                card.innerHTML = `
+                    <div class="service-img">
+                        <i class="fa-solid ${item.icon} fa-xl" style="color: var(--primary-color)"></i>
+                    </div>
+                    <h4>${item.title}</h4>
+                    <p>${item.shortDesc}</p>
+                `;
+                servicesGrid.appendChild(card);
             });
+        }
+
+        renderServices(services);
+
+        // SEARCH FUNCTIONALITY
+        function filterServices() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = services.filter(s => s.title.toLowerCase().includes(query) || s.shortDesc.toLowerCase().includes(query));
+            renderServices(filtered);
+        }
+
+        // HERO SLIDER AUTOMATION
+        let currentSlide = 0;
+        const sliderWrapper = document.getElementById('sliderWrapper');
+        const dots = document.querySelectorAll('.dot');
+
+        function goToSlide(index) {
+            currentSlide = index;
+            sliderWrapper.style.transform = `translateX(-${index * 33.333}%)`;
+            dots.forEach((dot, idx) => {
+                dot.classList.toggle('active', idx === index);
+            });
+        }
+
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % 3;
+            goToSlide(currentSlide);
+        }, 4000);
+
+        // DARK / LIGHT MODE TOGGLE
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const targetTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', targetTheme);
+            themeToggle.innerHTML = targetTheme === 'dark' ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+        });
+
+        // SIDEBAR TOGGLE
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const menuToggle = document.getElementById('menuToggle');
+        const menuClose = document.getElementById('menuClose');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+
+        menuToggle.addEventListener('click', toggleSidebar);
+        menuClose.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar);
+
+        // MODAL FUNCTIONS
+        let activeService = null;
+        const modal = document.getElementById('serviceModal');
+
+        function openModal(service) {
+            activeService = service;
+            document.getElementById('modalTitle').innerText = service.title;
+            document.getElementById('modalBody').innerHTML = `
+                <img src="${service.img}" alt="${service.title}">
+                <p><strong>বর্ণনা:</strong> ${service.details}</p>
+                <br>
+                <p><strong>প্রয়োজনীয় সময়:</strong> ১-৩ কার্যদিবস</p>
+                <p><strong>সহায়তা হটলাইন:</strong> ১৬১২২</p>
+            `;
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+        }
+
+        // SHARE & DOWNLOAD FUNCTIONALITY
+        function shareService() {
+            if (navigator.share && activeService) {
+                navigator.share({
+                    title: activeService.title,
+                    text: activeService.shortDesc,
+                    url: window.location.href,
+                }).catch(console.error);
+            } else {
+                alert("আপনার ব্রাউজারে সরাসরি শেয়ার সুবিধা নেই। লিংক কপি করা হয়েছে!");
+            }
+        }
+
+        function downloadServiceInfo() {
+            if (!activeService) return;
+            const element = document.createElement("a");
+            const file = new Blob([`সেবা: ${activeService.title}\nবর্ণনা: ${activeService.details}`], {type: 'text/plain;charset=utf-8'});
+            element.href = URL.createObjectURL(file);
+            element.download = `${activeService.title}.txt`;
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
         }
     </script>
 </body>
