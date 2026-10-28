@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0f766e">
+<title>NU Honours Routine Maker</title>
+<link rel="preconnect" href="https://fonts.maateen.me">
+<link rel="stylesheet" href="https://fonts.maateen.me/solaiman-lipi/font.css">
+<style>
+:root{--primary:#0f766e;--ink:#17212b;--muted:#64748b;--line:#dbe4ea;--bg:#f3f7f8;--card:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:SolaimanLipi,"Noto Sans Bengali",sans-serif}
+header{background:linear-gradient(135deg,#115e59,#0f766e);color:white;padding:26px 18px}
+.wrap{max-width:1120px;margin:auto}h1{margin:0 0 8px;font-size:clamp(24px,4vw,36px)}header p{margin:0;opacity:.92}
+main{max-width:1120px;margin:22px auto;padding:0 14px 40px;display:grid;gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 5px 18px #0f172a08}
+h2{font-size:22px;margin:0 0 12px}p.help{color:var(--muted);margin:6px 0 12px;line-height:1.6}
+label{display:block;font-weight:bold;margin:10px 0 5px}
+input,select,textarea,button{font:inherit}
+input[type=file],input[type=text],select,textarea{width:100%;border:1px solid #cbd5e1;border-radius:10px;padding:10px;background:white;color:var(--ink)}
+textarea{min-height:220px;resize:vertical;line-height:1.6}
+.row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+button{border:0;border-radius:10px;padding:11px 16px;background:var(--primary);color:white;cursor:pointer;font-weight:bold}
+button.secondary{background:#e2e8f0;color:#17212b}button.danger{background:#b91c1c}
+button:disabled{opacity:.55;cursor:wait}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.status{padding:10px 12px;border-radius:10px;background:#ecfeff;color:#155e75;margin-top:12px;white-space:pre-wrap}
+.warning{background:#fff7ed;color:#9a3412;padding:12px;border-radius:10px;line-height:1.6}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:15px}th,td{border:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}th{background:#f1f5f9}
+.small{font-size:13px;color:var(--muted)}.hidden{display:none}.preview{background:white;border:1px dashed #94a3b8;border-radius:12px;padding:12px;overflow:auto}
+.output{border:1px solid var(--line);padding:12px;border-radius:12px;margin-top:10px;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.routine-sheet{background:#fff;color:#111;padding:24px;max-width:850px;margin:0 auto;font-family:SolaimanLipi,serif}
+.routine-sheet h2,.routine-sheet h3{text-align:center}.routine-sheet h2{font-size:24px}.routine-sheet table{font-size:14px}
+footer{text-align:center;color:var(--muted);padding:0 12px 24px}
+@media(max-width:650px){.row{grid-template-columns:1fr}.card{padding:14px}table{font-size:13px}th,td{padding:6px}}
+@media print{body{background:white}.no-print{display:none!important}.routine-sheet{max-width:none}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><h1>জাতীয় বিশ্ববিদ্যালয় Honours Routine Maker</h1><p>মূল পরীক্ষার রুটিন থেকে বিভাগ ও বর্ষভিত্তিক আলাদা রুটিন তৈরি করুন</p></div></header>
+<main>
+<section class="card">
+<h2>১. মূল রুটিন আপলোড</h2>
+<p class="help">PDF অথবা পরিষ্কার ছবি (JPG, PNG) দিন। OCR আপনার ফাইলের লেখা শনাক্ত করার চেষ্টা করবে। স্ক্যানের মান, টেবিল ও বাংলা অক্ষরের কারণে ভুল হতে পারে—তাই ফলাফল অবশ্যই যাচাই করবেন।</p>
+<label for="fileInput">রুটিন ফাইল</label><input id="fileInput" type="file" accept=".pdf,image/png,image/jpeg,image/webp">
+<div class="row">
+<div><label for="session">পরীক্ষা/সেশন</label><input id="session" type="text" placeholder="যেমন: Honours 2nd Year Examination 2025"></div>
+<div><label for="university">শিরোনাম</label><input id="university" type="text" value="জাতীয় বিশ্ববিদ্যালয়, বাংলাদেশ"></div>
+</div>
+<div class="actions"><button id="extractBtn">ফাইল থেকে লেখা শনাক্ত করুন (OCR)</button><button id="clearBtn" class="secondary">সব মুছুন</button></div>
+<div id="status" class="status" role="status">ফাইল নির্বাচন করে OCR বাটনে চাপ দিন। প্রথমবার ব্যবহারে প্রয়োজনীয় লাইব্রেরি ইন্টারনেট থেকে লোড হবে।</div>
+</section>
+
+<section class="card">
+<h2>২. শনাক্ত করা লেখা যাচাই ও সম্পাদনা</h2>
+<p class="help">OCR-এর ফলাফল নিচের বাক্সে আসবে। বানান, তারিখ, সময়, বিষয় কোড ও পরীক্ষার তথ্য মূল PDF-এর সঙ্গে মিলিয়ে সংশোধন করুন। প্রতিটি পরীক্ষার তথ্য এক লাইনে রাখুন—যেমন: <b>12/11/2026 | 1:00 PM | 212101 | বাংলা সাহিত্য</b></p>
+<label for="ocrText">OCR লেখা / সম্পাদনযোগ্য রুটিন তথ্য</label>
+<textarea id="ocrText" placeholder="OCR সম্পন্ন হলে লেখা এখানে আসবে। প্রয়োজনে নিজে টাইপ বা পেস্ট করুন।"></textarea>
+<div class="row">
+<div><label for="department">বিভাগের নাম</label><input id="department" type="text" placeholder="যেমন: বাংলা"></div>
+<div><label for="year">বর্ষ</label><select id="year"><option>Honours 1st Year</option><option>Honours 2nd Year</option><option>Honours 3rd Year</option><option>Honours 4th Year</option></select></div>
+</div>
+<label for="note">অতিরিক্ত নোট (ঐচ্ছিক)</label><input id="note" type="text" placeholder="যেমন: ব্যবহারিক পরীক্ষার তারিখ বিভাগ থেকে জানানো হবে">
+<div class="actions"><button id="previewBtn">প্রিভিউ তৈরি করুন</button><button id="downloadPdfBtn" class="secondary">PDF ডাউনলোড</button><button id="downloadImageBtn" class="secondary">PNG ছবি ডাউনলোড</button></div>
+<p class="small">PDF/PNG তৈরি করতে html2canvas ও jsPDF ব্যবহার করা হয়। বাংলা ফন্ট ঠিকভাবে এমবেড/রেন্ডার হওয়ার জন্য ডাউনলোডের আগে প্রিভিউ লোড হতে দিন।</p>
+</section>
+
+<section class="card">
+<h2>৩. রুটিন প্রিভিউ</h2>
+<div id="preview" class="preview"><p class="small">এখানে আপনার বিভাগ ও বর্ষের রুটিন দেখা যাবে।</p></div>
+</section>
+
+<section class="card">
+<h2>৪. একাধিক বিভাগে রুটিন তৈরি করার নিয়ম</h2>
+<div class="warning">এই সংস্করণে OCR-কে সরাসরি “নির্ভুল বিভাগভিত্তিক রুটিন” ধরে নেওয়া হয় না। একেকটি বিভাগ ও বর্ষের তথ্য আলাদা করে OCR টেক্সট বক্সে রাখুন, বিভাগ ও বর্ষ নির্বাচন করুন, তারপর প্রিভিউ ও PDF/PNG ডাউনলোড করুন। এতে ভুল তথ্য অজান্তে প্রকাশ হওয়ার ঝুঁকি কমে।</div>
+<p class="help">পরামর্শ: প্রতিটি রুটিনে পরীক্ষার তারিখ, সময়, বিষয় কোড ও বিষয় আলাদা লাইনে লিখুন। সরকারি রুটিনের সঙ্গে প্রতিটি লাইন যাচাই না করে শিক্ষার্থীদের মধ্যে শেয়ার করবেন না।</p>
+</section>
+</main>
+<footer>GitHub Pages-এ ব্যবহারযোগ্য • ডেটা আপনার ব্রাউজারেই প্রক্রিয়া হয় • আপলোড করা ফাইল সার্ভারে পাঠানো হয় না</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+let pdfjsLoaded = false, tesseractLoaded = false, exportLoaded = false;
+
+function loadScript(src){
+  return new Promise((resolve,reject)=>{
+    const s=document.createElement('script');s.src=src;s.onload=resolve;s.onerror=()=>reject(new Error('লাইব্রেরি লোড হয়নি: '+src));document.head.appendChild(s);
+  });
+}
+async function loadOCRLibraries(){
+  if(!window.pdfjsLib){await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');window.pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';}
+  if(!window.Tesseract) await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js');
+}
+async function loadExportLibraries(){
+  if(!window.html2canvas) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+  if(!window.jspdf) await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+}
+function setStatus(msg){$('status').textContent=msg;}
+function cleanText(s){return s.replace(/\r/g,'').replace(/[ \t]+/g,' ').replace(/\n{3,}/g,'\n\n').trim();}
+async function recognizeImage(image){
+  const result=await Tesseract.recognize(image,'ben+eng',{logger:m=>{
+    if(m.status==='recognizing text') setStatus('OCR চলছে… '+Math.round((m.progress||0)*100)+'%');
+  }});
+  return result.data.text||'';
+}
+$('extractBtn').addEventListener('click',async()=>{
+  const file=$('fileInput').files[0];
+  if(!file){setStatus('আগে PDF বা ছবি নির্বাচন করুন।');return;}
+  const btn=$('extractBtn');btn.disabled=true;
+  try{
+    await loadOCRLibraries();
+    let pages=[];
+    if(file.type==='application/pdf'||file.name.toLowerCase().endsWith('.pdf')){
+      const data=new Uint8Array(await file.arrayBuffer());
+      const pdf=await pdfjsLib.getDocument({data}).promise;
+      if(pdf.numPages>30) throw new Error('এই সংস্করণে একবারে সর্বোচ্চ ৩০ পৃষ্ঠা প্রসেস করা যাবে। PDF ভাগ করে দিন।');
+      for(let i=1;i<=pdf.numPages;i++){
+        setStatus('PDF পৃষ্ঠা '+i+'/'+pdf.numPages+' প্রস্তুত হচ্ছে…');
+        const page=await pdf.getPage(i),viewport=page.getViewport({scale:2});
+        const canvas=document.createElement('canvas');canvas.width=viewport.width;canvas.height=viewport.height;
+        await page.render({canvasContext:canvas.getContext('2d'),viewport}).promise;
+        setStatus('পৃষ্ঠা '+i+'/'+pdf.numPages+' থেকে লেখা শনাক্ত হচ্ছে…');
+        pages.push('--- পৃষ্ঠা '+i+' ---\n'+await recognizeImage(canvas));
+      }
+    }else{
+      pages.push(await recognizeImage(file));
+    }
+    $('ocrText').value=cleanText(pages.join('\n\n'));
+    setStatus('OCR শেষ। এখন মূল রুটিনের সঙ্গে প্রতিটি তারিখ, সময়, বিষয় কোড ও বিষয় মিলিয়ে নিন। OCR ফলাফল নির্ভুল বলে ধরে নেবেন না।');
+  }catch(e){setStatus('সমস্যা হয়েছে: '+e.message+'\nইন্টারনেট সংযোগ পরীক্ষা করুন অথবা লেখা নিজে পেস্ট করুন।');}
+  finally{btn.disabled=false;}
+});
+function escapeHTML(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function makePreview(){
+  const department=$('department').value.trim()||'বিভাগের নাম লিখুন';
+  const year=$('year').value;
+  const title=$('university').value.trim()||'জাতীয় বিশ্ববিদ্যালয়, বাংলাদেশ';
+  const session=$('session').value.trim();
+  const note=$('note').value.trim();
+  const lines=cleanText($('ocrText').value).split('\n').filter(x=>x.trim());
+  const body=lines.map(line=>`<tr><td>${escapeHTML(line)}</td></tr>`).join('');
+  $('preview').innerHTML=`<div id="routineSheet" class="routine-sheet">
+    <h2>${escapeHTML(title)}</h2><h3>Honours পরীক্ষার সময়সূচি</h3>
+    <p style="text-align:center"><b>${escapeHTML(year)}</b></p>
+    ${session?`<p style="text-align:center">${escapeHTML(session)}</p>`:''}
+    <p><b>বিভাগ:</b> ${escapeHTML(department)}</p>
+    <table><thead><tr><th>পরীক্ষার তথ্য (মূল রুটিনের সঙ্গে যাচাই করুন)</th></tr></thead><tbody>${body||'<tr><td>এখানে OCR টেক্সট বা রুটিনের তথ্য যোগ করুন।</td></tr>'}</tbody></table>
+    ${note?`<p><b>নোট:</b> ${escapeHTML(note)}</p>`:''}
+    <p style="font-size:12px;text-align:center;margin-top:22px">প্রকাশের আগে জাতীয় বিশ্ববিদ্যালয়ের মূল রুটিনের সঙ্গে সব তথ্য যাচাই করুন।</p>
+  </div>`;
+}
+$('previewBtn').addEventListener('click',makePreview);
+async function getCanvas(){
+  if(!$('preview').querySelector('#routineSheet')) makePreview();
+  await loadExportLibraries();
+  await document.fonts.ready;
+  return await html2canvas($('routineSheet'),{scale:2,backgroundColor:'#ffffff',useCORS:true});
+}
+$('downloadImageBtn').addEventListener('click',async()=>{
+  try{setStatus('PNG তৈরি হচ্ছে…');const c=await getCanvas();const a=document.createElement('a');a.download=fileName()+'.png';a.href=c.toDataURL('image/png');a.click();setStatus('PNG ডাউনলোড শুরু হয়েছে।');}
+  catch(e){setStatus('PNG তৈরি করা যায়নি: '+e.message);}
+});
+$('downloadPdfBtn').addEventListener('click',async()=>{
+  try{setStatus('PDF তৈরি হচ্ছে…');const c=await getCanvas();const {jsPDF}=window.jspdf;const pdf=new jsPDF({orientation:c.width>c.height?'landscape':'portrait',unit:'px',format:[c.width,c.height]});pdf.addImage(c.toDataURL('image/png'),'PNG',0,0,c.width,c.height);pdf.save(fileName()+'.pdf');setStatus('PDF ডাউনলোড শুরু হয়েছে।');}
+  catch(e){setStatus('PDF তৈরি করা যায়নি: '+e.message);}
+});
+function fileName(){return (($('department').value||'department')+'-'+$('year').value).replace(/[^\p{L}\p{N}-]+/gu,'-').replace(/^-|-$/g,'');}
+$('clearBtn').addEventListener('click',()=>{
+  $('fileInput').value='';$('ocrText').value='';$('department').value='';$('session').value='';$('note').value='';
+  $('preview').innerHTML='<p class="small">এখানে আপনার বিভাগ ও বর্ষের রুটিন দেখা যাবে।</p>';
+  setStatus('ফর্ম পরিষ্কার করা হয়েছে।');
+});
+</script>
+</body>
+</html>
